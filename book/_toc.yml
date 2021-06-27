@@ -1,0 +1,4 @@
+format: jb-book
+root: welcome
+chapters:
+- file: PartI-ExtractLemmatizationfromJSON

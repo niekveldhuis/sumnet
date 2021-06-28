@@ -6,7 +6,7 @@
 # 
 # The output contains text IDs, line IDs, lemmas, and relevant other data. 
 
-# In[3]:
+# In[1]:
 
 
 #create necessary directories
@@ -34,7 +34,7 @@ import json
 # 
 # **NOTE:** If you already have this data, you can skip this step as it can take quite a long time.
 
-# In[4]:
+# In[2]:
 
 
 project = 'epsd2/admin/ur3' #define project to download.
@@ -46,17 +46,17 @@ url = "http://build-oracc.museum.upenn.edu/json/%s.zip" % proj
 file_name = "jsonzip/%s.zip" % proj
 with requests.get(url, stream=True) as request:
     if request.status_code == 200:
-      #if file is accessible, download
-      tqdm.write('Saving ' + url + ' as ' + file_name)
-      total_size = int(request.headers.get('content-length', 0))
-      tqdm_handler = tqdm(total=total_size, unit='B', unit_scale=True, desc = project)
-      with open(file_name, 'wb') as zip_file:
+        #if file is accessible, download
+        tqdm.write('Saving ' + url + ' as ' + file_name)
+        total_size = int(request.headers.get('content-length', 0))
+        tqdm_handler = tqdm(total=total_size, unit='B', unit_scale=True, desc = project)
+        with open(file_name, 'wb') as zip_file:
         #use tdqm to show download speed
-        for chunk in request.iter_content(chunk_size=CHUNK):
-          tqdm_handler.update(len(chunk))
-          zip_file.write(chunk)
+            for chunk in request.iter_content(chunk_size=CHUNK):
+                tqdm_handler.update(len(chunk))
+                zip_file.write(chunk)
     else:
-      tqdm.write("WARNING: %s does not exist." % url)
+        tqdm.write("WARNING: %s does not exist." % url)
 
 
 # ## 2 Download BTDNS Data
@@ -71,7 +71,7 @@ with requests.get(url, stream=True) as request:
 
 # ### 2.1 Extract Data from .txt file.
 
-# In[ ]:
+# In[3]:
 
 
 bdtns_catalogue_data = pd.read_csv('https://raw.githubusercontent.com/niekveldhuis/sumnet/master/QUERY_catalogue.txt', delimiter='\t')
@@ -83,7 +83,7 @@ bdtns_catalogue_data
 # 
 # Filter data for Puzriš-Dagān tablets and drop tablets with null p-numbers or without dates.
 
-# In[ ]:
+# In[4]:
 
 
 bdtns_catalogue_data = bdtns_catalogue_data[(bdtns_catalogue_data['Provenience']
@@ -118,7 +118,7 @@ bdtns_catalogue_data
 # 
 # The fields `extent`, `scope`, and `state` give metatextual data about the condition of the object; they capture the number of broken lines or columns and similar information. 
 
-# In[ ]:
+# In[5]:
 
 
 def parse_ORACC_json(lemmatized_data_json, meta_data, dollar_keys):
@@ -161,7 +161,7 @@ def parse_ORACC_json(lemmatized_data_json, meta_data, dollar_keys):
 # 
 # We do this by loading the data from the `catalogue.json` into a dataframe and selecting the pnumbers where the provenience is indicated to be Puzriš-Dagan or modern Drehem.
 
-# In[ ]:
+# In[6]:
 
 
 zip_file = zipfile.ZipFile("jsonzip/%s.zip" % proj)    # create a Zipfile object
@@ -207,7 +207,7 @@ catalogue_data
 # 
 # The dictionary `meta_d` is created to hold temporary information. The value of the key `id_text` is updated in the main process every time a new JSON file is opened and send to the `parsejson()` function. The `parsejson()` function itself will change values or add new keys, depending on the information found while iterating through the JSON file. When a new lemma row is created, `parse_ORACC_json()` will supply data such as `id_text`, `label` and (potentially) other information from `meta_d`.
 
-# In[ ]:
+# In[7]:
 
 
 lemma_list = []
@@ -215,30 +215,30 @@ meta_data = {'label': None}
 dollar_keys = ['extent', 'scope', 'state']
 
 try:
-  zip_file = zipfile.ZipFile(file_name)       # create a Zipfile object
+    zip_file = zipfile.ZipFile(file_name)       # create a Zipfile object
 except:
-  print(file_name, 'does not exist or is not a proper ZIP file')
+    print(file_name, 'does not exist or is not a proper ZIP file')
 
 drehem_list_oracc = catalogue_data.index.to_list()
 files = [project + '/corpusjson/' + p_number + '.json' for p_number in drehem_list_oracc]    #that holds all the P, Q, and X numbers.
 for lemma_file in tqdm(files, desc = project):       #iterate over the file names
-  id_text = project + lemma_file[-13:-5] # id_text is, for instance, blms/P414332
+    id_text = project + lemma_file[-13:-5] # id_text is, for instance, blms/P414332
 
-  p_number = lemma_file[-12:-5]
-  meta_data['id_text'] = id_text
-  meta_data['date'] = catalogue_data.loc[p_number]['date_of_origin']
-  meta_data['dates_references'] = catalogue_data.loc[p_number]['dates_referenced']
-  meta_data['publication'] = catalogue_data.loc[p_number]['primary_publication']
-  meta_data['collection'] = catalogue_data.loc[p_number]['collection']
-  meta_data['museum_no'] = catalogue_data.loc[p_number]['museum_no']
-  meta_data['metadata_source'] = catalogue_data.loc[p_number]['metadata_source']
+    p_number = lemma_file[-12:-5]
+    meta_data['id_text'] = id_text
+    meta_data['date'] = catalogue_data.loc[p_number]['date_of_origin']
+    meta_data['dates_references'] = catalogue_data.loc[p_number]['dates_referenced']
+    meta_data['publication'] = catalogue_data.loc[p_number]['primary_publication']
+    meta_data['collection'] = catalogue_data.loc[p_number]['collection']
+    meta_data['museum_no'] = catalogue_data.loc[p_number]['museum_no']
+    meta_data['metadata_source'] = catalogue_data.loc[p_number]['metadata_source']
 
-  try:
-    json_str = zip_file.read(lemma_file).decode('utf-8')         #read and decode the json file of one particular text
-    lemmatized_data_json = json.loads(json_str)                # make it into a json object (essentially a dictionary)
-    lemma_list.extend(parse_ORACC_json(lemmatized_data_json, meta_data, dollar_keys))               # and send to the parse_ORACC_json() function
-  except:
-    print(id_text, 'is not available or not complete')
+    try:
+        json_str = zip_file.read(lemma_file).decode('utf-8')         #read and decode the json file of one particular text
+        lemmatized_data_json = json.loads(json_str)                # make it into a json object (essentially a dictionary)
+        lemma_list.extend(parse_ORACC_json(lemmatized_data_json, meta_data, dollar_keys))               # and send to the parse_ORACC_json() function
+    except:
+        print(id_text, 'is not available or not complete')
 
 zip_file.close()
 
@@ -251,7 +251,7 @@ zip_file.close()
 # ### 4.1 Transform the Data into a DataFrame
 # Here we use `lemma_list` to make our dataframe and we view it.
 
-# In[ ]:
+# In[8]:
 
 
 words_df = pd.DataFrame(lemma_list)
@@ -259,13 +259,13 @@ words_df = words_df.fillna('')      # fill empty values with empty strings
 words_df[words_df['lang'] == 'sux'] # display lemmas where language is Sumerian
 
 
-# In[ ]:
+# In[9]:
 
 
 words_df.shape   # see shape
 
 
-# In[ ]:
+# In[10]:
 
 
 words_df.columns # see column names
@@ -278,7 +278,7 @@ words_df.columns # see column names
 # 
 # The `replace()` function takes a nested dictionary as argument. The top-level keys identify the columns on which the `replace()` function should operate (in this case 'gw' and 'sense'). The value of each key is another dictionary with the search string as key and the replace string as value.
 
-# In[ ]:
+# In[11]:
 
 
 findreplace = {' ' : '-', ',' : ''}
@@ -323,7 +323,7 @@ words_df = words_df.replace({'gw' : findreplace, 'sense' : findreplace}, regex=T
 # 
 # The field "id_line" is created by splitting the field "id_word" into (two or) three elements. The format of "id_word" is IDtext.line.word. The middle part, id_line, is selected and its data type is changed from string to integer. Rows that represent gaps in the text or horizontal drawings have an "id_word" in the format IDtext.line (consisting of only two elements), but are treated in exactly the same way.
 
-# In[ ]:
+# In[12]:
 
 
 words_df['id_line'] = [int(wordid.split('.')[1]) for wordid in words_df['id_word']]
@@ -339,7 +339,7 @@ words_df.head(10)
 # 
 # Finally, rows representing horizontal rulings, blank lines, or broken lines have data in the fields 'state', 'scope', and 'extent' (for instance 'state' = broken, 'scope' = line, and 'extent' = 3, to indicate three broken lines). We can use this to prevent scripts to 'jump over' such breaks when looking for key words after (or before) a proper noun. We distinguish between physical breaks and logical breaks (such as horizontal rulings or seal impressions). 
 
-# In[ ]:
+# In[13]:
 
 
 proper_nouns = ['FN', 'PN', 'DN', 'AN', 'WN', 'ON', 'TN', 'MN', 'CN', 'GN']
@@ -357,7 +357,7 @@ words_df.head(10)
 # ## 6 Select Relevant Columns
 # Now we can select only the field 'lemma' and the fields that indicate the ID of the word, the line, or the document, plus the metadata, and the field 'label', which indicates the physical position of the line on the document.
 
-# In[ ]:
+# In[14]:
 
 
 cols = ['lemma', 'id_text', 'id_line', 'id_word', 'label', 'date', 'dates_references', 'publication', 'collection', 'museum_no', 'ftype', 'metadata_source']
@@ -367,14 +367,14 @@ words_df.head(100)
 
 # We can simplify the 'id_text' column, because all documents derive from the same project (epsd2/admnin/u3adm).
 
-# In[ ]:
+# In[15]:
 
 
 words_df['id_text'] = [tid[-7:] for tid in words_df['id_text']]
 words_df.head(20)
 
 
-# In[ ]:
+# In[16]:
 
 
 test = words_df.head(4000)
@@ -388,9 +388,12 @@ test[test['lemma'].str.contains('N')]
 # 
 # You can skip Part I by importing the Part I output as a pandas dataframe at the beginning of Part II. Similarly, in the next parts, after you save the output, you will be able to import that output later on instead of rerunning the sections before.
 
-# In[ ]:
+# In[17]:
 
 
 words_df.to_csv('output/part_1_output.csv')
 words_df.to_pickle('output/part_1_output.p')
+
+catalogue_data.to_csv('output/part_1_catalogue.csv')
+catalogue_data.to_pickle('output/part_1_catalogue.p')
 

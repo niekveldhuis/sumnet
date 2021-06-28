@@ -51,6 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="II. N-gram Neighbors of the Proper Names (PN)" href="PartII-N-gramNeighborsoftheProperNames%28PN%29.html" />
     <link rel="prev" title="Sumerian Networks JupyterBook" href="welcome.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -92,6 +93,36 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    I. Extract Lemmatization from JSON
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartII-N-gramNeighborsoftheProperNames%28PN%29.html">
+   II. N-gram Neighbors of the Proper Names (PN)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartIII-HarmonizingYearNameFormulaeandProcessingDates.html">
+   III. Harmonizing Year Name Formulae and Processing Dates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartIV-ArchiveClassification.html">
+   IV. Archive Classification
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartV-IdentifyingAttributesoftheProperNames%28PN%29-ProfessionsandRoles.html">
+   V. Identifying Attributes of the Proper Names (PN): Professions and Roles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartVI-GeographicNames.html">
+   VI. Geographic Names
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PartVII-CommoditiesCounting.html">
+   VII. Commodities Counting
   </a>
  </li>
 </ul>
@@ -337,17 +368,17 @@
 <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;jsonzip/</span><span class="si">%s</span><span class="s2">.zip&quot;</span> <span class="o">%</span> <span class="n">proj</span>
 <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">request</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-      <span class="c1">#if file is accessible, download</span>
-      <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Saving &#39;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39; as &#39;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
-      <span class="n">total_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-      <span class="n">tqdm_handler</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">total_size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">project</span><span class="p">)</span>
-      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
+        <span class="c1">#if file is accessible, download</span>
+        <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Saving &#39;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39; as &#39;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">tqdm_handler</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">total_size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">project</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
         <span class="c1">#use tdqm to show download speed</span>
-        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">CHUNK</span><span class="p">):</span>
-          <span class="n">tqdm_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
-          <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">CHUNK</span><span class="p">):</span>
+                <span class="n">tqdm_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+                <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;WARNING: </span><span class="si">%s</span><span class="s2"> does not exist.&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;WARNING: </span><span class="si">%s</span><span class="s2"> does not exist.&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -356,62 +387,8 @@
 </pre></div>
 </div>
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "b36494795e994bd59b053619fbf22427", "version_major": 2, "version_minor": 0}
-</script><div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mf">2e5</span><span class="n">c5013c838</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span>       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span>         <span class="c1">#use tdqm to show download speed</span>
-<span class="ne">---&gt; </span><span class="mi">16</span>         <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">CHUNK</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">17</span>           <span class="n">tqdm_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span>           <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\requests\models.py</span> in <span class="ni">generate</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">751</span>             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="s1">&#39;stream&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">752</span>                 <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">753</span>                     <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">,</span> <span class="n">decode_content</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">754</span>                         <span class="k">yield</span> <span class="n">chunk</span>
-<span class="g g-Whitespace">    </span><span class="mi">755</span>                 <span class="k">except</span> <span class="n">ProtocolError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\urllib3\response.py</span> in <span class="ni">stream</span><span class="nt">(self, amt, decode_content)</span>
-<span class="g g-Whitespace">    </span><span class="mi">574</span>         <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">575</span>             <span class="k">while</span> <span class="ow">not</span> <span class="n">is_fp_closed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">576</span>                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">amt</span><span class="o">=</span><span class="n">amt</span><span class="p">,</span> <span class="n">decode_content</span><span class="o">=</span><span class="n">decode_content</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">577</span> 
-<span class="g g-Whitespace">    </span><span class="mi">578</span>                 <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\urllib3\response.py</span> in <span class="ni">read</span><span class="nt">(self, amt, decode_content, cache_content)</span>
-<span class="g g-Whitespace">    </span><span class="mi">517</span>             <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">518</span>                 <span class="n">cache_content</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="ne">--&gt; </span><span class="mi">519</span>                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">fp_closed</span> <span class="k">else</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">520</span>                 <span class="k">if</span> <span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">521</span>                     <span class="n">amt</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\http\client.py</span> in <span class="ni">read</span><span class="nt">(self, amt)</span>
-<span class="g g-Whitespace">    </span><span class="mi">455</span>             <span class="c1"># Amount is given, implement using readinto</span>
-<span class="g g-Whitespace">    </span><span class="mi">456</span>             <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">457</span>             <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">458</span>             <span class="k">return</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">b</span><span class="p">)[:</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">459</span>         <span class="k">else</span><span class="p">:</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\http\client.py</span> in <span class="ni">readinto</span><span class="nt">(self, b)</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span>         <span class="c1"># connection, and the user is reading more bytes than will be provided</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span>         <span class="c1"># (for example, reading in 1k chunks)</span>
-<span class="ne">--&gt; </span><span class="mi">501</span>         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">502</span>         <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">b</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span>             <span class="c1"># Ideally, we would raise IncompleteRead if the content-length</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\socket.py</span> in <span class="ni">readinto</span><span class="nt">(self, b)</span>
-<span class="g g-Whitespace">    </span><span class="mi">587</span>         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">588</span>             <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">589</span>                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">recv_into</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">590</span>             <span class="k">except</span> <span class="n">timeout</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">591</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_occurred</span> <span class="o">=</span> <span class="kc">True</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
-</pre></div>
-</div>
-</div>
+{"model_id": "e655443c3328462c967ea8cd17d03733", "version_major": 2, "version_minor": 0}
+</script></div>
 </div>
 </div>
 <div class="section" id="download-btdns-data">
@@ -430,6 +407,133 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BDTNS_no</th>
+      <th>Publications</th>
+      <th>Museum_no</th>
+      <th>Date</th>
+      <th>Provenience</th>
+    </tr>
+    <tr>
+      <th>CDLI_no</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>NaN</th>
+      <td>197624.0</td>
+      <td>À l'école des scribes, p. 104</td>
+      <td>NaN</td>
+      <td>AS09 - 00 - 00</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>203551.0</td>
+      <td>A New Cuneiform Text..., IM 141866</td>
+      <td>IM 141866 //</td>
+      <td>0000 - 00 - 00</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>P114469</th>
+      <td>21035.0</td>
+      <td>AAA 1 78 24 = MVN 05 249 = CDLI P114469</td>
+      <td>WML 49.47.46</td>
+      <td>0000 - 07 - 12</td>
+      <td>Ĝirsu</td>
+    </tr>
+    <tr>
+      <th>P142651</th>
+      <td>38568.0</td>
+      <td>AAICAB 1/1, Ashm. 1909-951 = CDLI P142651</td>
+      <td>Ashm. 1909-951</td>
+      <td>AS05 - 11 - 00</td>
+      <td>Ĝirsu</td>
+    </tr>
+    <tr>
+      <th>P142652</th>
+      <td>38569.0</td>
+      <td>AAICAB 1/1, Ashm. 1911-139 = CDLI P142652</td>
+      <td>Ashm. 1911-139</td>
+      <td>SS09 - 08 - 23</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>P142619</th>
+      <td>6022.0</td>
+      <td>ZVO 25 134 2 = Hermitage 3 195 (unpubl.) = CDL...</td>
+      <td>Erm 14814</td>
+      <td>AS01 - 03 - 28</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142620</th>
+      <td>6023.0</td>
+      <td>ZVO 25 136 3 = RA 73 190 = RIM E3/2.1.2.74</td>
+      <td>MA 9612</td>
+      <td>AS06 - 00 - 00</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>191925.0</td>
+      <td>Zwischen Orient und Okzident 262 1</td>
+      <td>NaN</td>
+      <td>AS03 - 00 - 00</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>191926.0</td>
+      <td>Zwischen Orient und Okzident 264 2</td>
+      <td>NaN</td>
+      <td>IS01 - 00 - 00</td>
+      <td>Umma</td>
+    </tr>
+    <tr>
+      <th>P253713</th>
+      <td>170094.0</td>
+      <td>NaN</td>
+      <td>MS 4703</td>
+      <td>NaN</td>
+      <td>Unkn. Prov.</td>
+    </tr>
+  </tbody>
+</table>
+<p>101390 rows × 5 columns</p>
+</div></div></div>
 </div>
 </div>
 <div class="section" id="filtering-data">
@@ -449,6 +553,133 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BDTNS_no</th>
+      <th>Publications</th>
+      <th>Museum_no</th>
+      <th>Date</th>
+      <th>Provenience</th>
+    </tr>
+    <tr>
+      <th>CDLI_no</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>P142785</th>
+      <td>38699.0</td>
+      <td>AAICAB 1/1, Ashm. 1919-11a-b = CDLI P142785 = ...</td>
+      <td>Ashm. 1919-11a-b</td>
+      <td>IS01 - 08 - 00</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142787</th>
+      <td>38700.0</td>
+      <td>AAICAB 1/1, Ashm. 1923-412 = CDLI P142787</td>
+      <td>Ashm. 1923-412</td>
+      <td>SS05 - 07 - 12</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142788</th>
+      <td>38701.0</td>
+      <td>AAICAB 1/1, Ashm. 1923-415 = CDLI P142788</td>
+      <td>Ashm. 1923-415</td>
+      <td>SH48 - 12 - 20</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142789</th>
+      <td>38702.0</td>
+      <td>AAICAB 1/1, Ashm. 1923-419 = CDLI P142789</td>
+      <td>Ashm. 1923-419</td>
+      <td>SS04 - XX - 15</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142790</th>
+      <td>38703.0</td>
+      <td>AAICAB 1/1, Ashm. 1923-420 = CDLI P142790</td>
+      <td>Ashm. 1923-420</td>
+      <td>XXXX - 01//02 - 01</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>P141938</th>
+      <td>38553.0</td>
+      <td>ZA 93 61 13</td>
+      <td>GIS 13</td>
+      <td>AS01 - 09 - 24</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P274585</th>
+      <td>167818.0</td>
+      <td>ZA 95 66 = CDLI P274585</td>
+      <td>A 05505</td>
+      <td>AS05 - XX - XX</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P381748</th>
+      <td>170855.0</td>
+      <td>ZA 96 179 = HSAO 16, no. 083</td>
+      <td>IM 044366</td>
+      <td>XXXX - XX - XX</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142618</th>
+      <td>6021.0</td>
+      <td>ZVO 25 134 1 = Hermitage 3 174 (unpubl.) = CDL...</td>
+      <td>Erm 14811</td>
+      <td>SH47 - 02 - 00</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+    <tr>
+      <th>P142619</th>
+      <td>6022.0</td>
+      <td>ZVO 25 134 2 = Hermitage 3 195 (unpubl.) = CDL...</td>
+      <td>Erm 14814</td>
+      <td>AS01 - 03 - 28</td>
+      <td>Puzriš-Dagān</td>
+    </tr>
+  </tbody>
+</table>
+<p>15279 rows × 5 columns</p>
+</div></div></div>
 </div>
 </div>
 </div>
@@ -543,6 +774,149 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date_of_origin</th>
+      <th>dates_referenced</th>
+      <th>collection</th>
+      <th>primary_publication</th>
+      <th>museum_no</th>
+      <th>provenience</th>
+      <th>metadata_source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>P100041</th>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 053</td>
+      <td>AO 20313</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P100189</th>
+      <td>SH46 - 08 - 05</td>
+      <td>SH46 - 08 - 05</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 211</td>
+      <td>AO 20039</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P100190</th>
+      <td>SH47 - 07 - 29</td>
+      <td>SH47 - 07 - 29</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 212</td>
+      <td>AO 20051</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P100191</th>
+      <td>AS01 - 03 - 24</td>
+      <td>AS01 - 03 - 24</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 213</td>
+      <td>AO 20074</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P100211</th>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>MHBA 51.2400</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>P456164</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>CDLI Seals 003454 (composite)</td>
+      <td>NaN</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+    <tr>
+      <th>P459158</th>
+      <td>Ibbi-Suen.00.00.00</td>
+      <td>Ibbi-Suen.00.00.00</td>
+      <td>private: anonymous, unlocated</td>
+      <td>CDLI Seals 006338 (physical)</td>
+      <td>Anonymous 459158</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+    <tr>
+      <th>P481391</th>
+      <td>SH46 - 02 - 24</td>
+      <td>SH46 - 02 - 24</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>unpublished unassigned ?</td>
+      <td>UC CSC 1950</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P481395</th>
+      <td>SS02 - 02 - 00</td>
+      <td>SS02 - 02 - 00</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>unpublished unassigned ?</td>
+      <td>UC CSC 1954</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>P517012</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>CDLI Seals 013964 (composite)</td>
+      <td>NaN</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+  </tbody>
+</table>
+<p>15671 rows × 7 columns</p>
+</div></div></div>
 </div>
 </div>
 <div class="section" id="call-the-parse-oracc-json-function-for-every-json-file">
@@ -559,32 +933,39 @@
 <span class="n">dollar_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;extent&#39;</span><span class="p">,</span> <span class="s1">&#39;scope&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">]</span>
 
 <span class="k">try</span><span class="p">:</span>
-  <span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>       <span class="c1"># create a Zipfile object</span>
+    <span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>       <span class="c1"># create a Zipfile object</span>
 <span class="k">except</span><span class="p">:</span>
-  <span class="nb">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;does not exist or is not a proper ZIP file&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;does not exist or is not a proper ZIP file&#39;</span><span class="p">)</span>
 
 <span class="n">drehem_list_oracc</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">project</span> <span class="o">+</span> <span class="s1">&#39;/corpusjson/&#39;</span> <span class="o">+</span> <span class="n">p_number</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span> <span class="k">for</span> <span class="n">p_number</span> <span class="ow">in</span> <span class="n">drehem_list_oracc</span><span class="p">]</span>    <span class="c1">#that holds all the P, Q, and X numbers.</span>
 <span class="k">for</span> <span class="n">lemma_file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">project</span><span class="p">):</span>       <span class="c1">#iterate over the file names</span>
-  <span class="n">id_text</span> <span class="o">=</span> <span class="n">project</span> <span class="o">+</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># id_text is, for instance, blms/P414332</span>
+    <span class="n">id_text</span> <span class="o">=</span> <span class="n">project</span> <span class="o">+</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># id_text is, for instance, blms/P414332</span>
 
-  <span class="n">p_number</span> <span class="o">=</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_text</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;dates_referenced&#39;</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;primary_publication&#39;</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
-  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
+    <span class="n">p_number</span> <span class="o">=</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_text</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;dates_referenced&#39;</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;primary_publication&#39;</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
+    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
 
-  <span class="k">try</span><span class="p">:</span>
-    <span class="n">json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lemma_file</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>         <span class="c1">#read and decode the json file of one particular text</span>
-    <span class="n">lemmatized_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>                <span class="c1"># make it into a json object (essentially a dictionary)</span>
-    <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>               <span class="c1"># and send to the parse_ORACC_json() function</span>
-  <span class="k">except</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">id_text</span><span class="p">,</span> <span class="s1">&#39;is not available or not complete&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lemma_file</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>         <span class="c1">#read and decode the json file of one particular text</span>
+        <span class="n">lemmatized_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>                <span class="c1"># make it into a json object (essentially a dictionary)</span>
+        <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>               <span class="c1"># and send to the parse_ORACC_json() function</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">id_text</span><span class="p">,</span> <span class="s1">&#39;is not available or not complete&#39;</span><span class="p">)</span>
 
 <span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "f189aee2b00445d798343b471f8a70cf", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -605,6 +986,317 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lang</th>
+      <th>form</th>
+      <th>delim</th>
+      <th>gdl</th>
+      <th>pos</th>
+      <th>ftype</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>id_text</th>
+      <th>date</th>
+      <th>...</th>
+      <th>sense</th>
+      <th>norm0</th>
+      <th>epos</th>
+      <th>base</th>
+      <th>morph</th>
+      <th>extent</th>
+      <th>scope</th>
+      <th>state</th>
+      <th>cont</th>
+      <th>aform</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>sux</td>
+      <td>6(diš)</td>
+      <td></td>
+      <td>[{'n': 'n', 'form': '6(diš)', 'id': 'P100041.3...</td>
+      <td>n</td>
+      <td></td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sux</td>
+      <td>udu</td>
+      <td></td>
+      <td>[{'v': 'udu', 'id': 'P100041.3.2.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>sheep</td>
+      <td>udu</td>
+      <td>N</td>
+      <td>udu</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>sux</td>
+      <td>kišib₃</td>
+      <td></td>
+      <td>[{'v': 'kišib₃', 'id': 'P100041.4.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>cylinder seal</td>
+      <td>kišib</td>
+      <td>N</td>
+      <td>kišib₃</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sux</td>
+      <td>lu₂-{d}suen</td>
+      <td></td>
+      <td>[{'v': 'lu₂', 'id': 'P100041.4.2.0', 'delim': ...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>0</td>
+      <td>Lusuen</td>
+      <td>PN</td>
+      <td>lu₂-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>sux</td>
+      <td>ki</td>
+      <td></td>
+      <td>[{'v': 'ki', 'id': 'P100041.5.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>place</td>
+      <td>ki</td>
+      <td>N</td>
+      <td>ki</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>594695</th>
+      <td>sux</td>
+      <td>gu₄</td>
+      <td></td>
+      <td>[{'v': 'gu₄', 'id': 'P481395.31.2.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P481395.31.2</td>
+      <td>l.e. 1</td>
+      <td>epsd2/admin/ur3/P481395</td>
+      <td>SS02 - 02 - 00</td>
+      <td>...</td>
+      <td>bull, ox</td>
+      <td>gud</td>
+      <td>N</td>
+      <td>gud</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>594696</th>
+      <td>sux</td>
+      <td>1(diš)</td>
+      <td></td>
+      <td>[{'n': 'n', 'form': '1(diš)', 'id': 'P481395.3...</td>
+      <td>n</td>
+      <td></td>
+      <td>P481395.31.3</td>
+      <td>l.e. 1</td>
+      <td>epsd2/admin/ur3/P481395</td>
+      <td>SS02 - 02 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>594697</th>
+      <td>sux</td>
+      <td>anše</td>
+      <td></td>
+      <td>[{'v': 'anše', 'id': 'P481395.31.4.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P481395.31.4</td>
+      <td>l.e. 1</td>
+      <td>epsd2/admin/ur3/P481395</td>
+      <td>SS02 - 02 - 00</td>
+      <td>...</td>
+      <td>equid, donkey</td>
+      <td>anše</td>
+      <td>N</td>
+      <td>anše</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>594698</th>
+      <td>sux</td>
+      <td>{d}šu-{d}suen</td>
+      <td></td>
+      <td>[{'det': 'semantic', 'pos': 'pre', 'seq': [{'v...</td>
+      <td>RN</td>
+      <td></td>
+      <td>P517012.3.1</td>
+      <td>a 1</td>
+      <td>epsd2/admin/ur3/P517012</td>
+      <td></td>
+      <td>...</td>
+      <td>1</td>
+      <td>Šusuen</td>
+      <td>RN</td>
+      <td>{d}šu-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>594699</th>
+      <td>sux</td>
+      <td>a-bu-um-dingir</td>
+      <td></td>
+      <td>[{'v': 'a', 'id': 'P517012.4.1.0', 'delim': '-...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P517012.4.1</td>
+      <td>a 2</td>
+      <td>epsd2/admin/ur3/P517012</td>
+      <td></td>
+      <td>...</td>
+      <td>0</td>
+      <td>Abumilum</td>
+      <td>PN</td>
+      <td>a-bu-um-dingir</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<p>588203 rows × 27 columns</p>
+</div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -612,10 +1304,24 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(594700, 27)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span><span class="o">.</span><span class="n">columns</span> <span class="c1"># see column names</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;lang&#39;, &#39;form&#39;, &#39;delim&#39;, &#39;gdl&#39;, &#39;pos&#39;, &#39;ftype&#39;, &#39;id_word&#39;, &#39;label&#39;,
+       &#39;id_text&#39;, &#39;date&#39;, &#39;dates_references&#39;, &#39;publication&#39;, &#39;collection&#39;,
+       &#39;museum_no&#39;, &#39;metadata_source&#39;, &#39;cf&#39;, &#39;gw&#39;, &#39;sense&#39;, &#39;norm0&#39;, &#39;epos&#39;,
+       &#39;base&#39;, &#39;morph&#39;, &#39;extent&#39;, &#39;scope&#39;, &#39;state&#39;, &#39;cont&#39;, &#39;aform&#39;],
+      dtype=&#39;object&#39;)
 </pre></div>
 </div>
 </div>
@@ -678,6 +1384,293 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lang</th>
+      <th>form</th>
+      <th>delim</th>
+      <th>gdl</th>
+      <th>pos</th>
+      <th>ftype</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>id_text</th>
+      <th>date</th>
+      <th>...</th>
+      <th>norm0</th>
+      <th>epos</th>
+      <th>base</th>
+      <th>morph</th>
+      <th>extent</th>
+      <th>scope</th>
+      <th>state</th>
+      <th>cont</th>
+      <th>aform</th>
+      <th>id_line</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>sux</td>
+      <td>6(diš)</td>
+      <td></td>
+      <td>[{'n': 'n', 'form': '6(diš)', 'id': 'P100041.3...</td>
+      <td>n</td>
+      <td></td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sux</td>
+      <td>udu</td>
+      <td></td>
+      <td>[{'v': 'udu', 'id': 'P100041.3.2.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>udu</td>
+      <td>N</td>
+      <td>udu</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>sux</td>
+      <td>kišib₃</td>
+      <td></td>
+      <td>[{'v': 'kišib₃', 'id': 'P100041.4.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>kišib</td>
+      <td>N</td>
+      <td>kišib₃</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sux</td>
+      <td>lu₂-{d}suen</td>
+      <td></td>
+      <td>[{'v': 'lu₂', 'id': 'P100041.4.2.0', 'delim': ...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>Lusuen</td>
+      <td>PN</td>
+      <td>lu₂-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>sux</td>
+      <td>ki</td>
+      <td></td>
+      <td>[{'v': 'ki', 'id': 'P100041.5.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>ki</td>
+      <td>N</td>
+      <td>ki</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>sux</td>
+      <td>ab-ba-kal-la-ta</td>
+      <td></td>
+      <td>[{'v': 'ab', 'id': 'P100041.5.2.0', 'delim': '...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P100041.5.2</td>
+      <td>o 3</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>Abbakala,ta</td>
+      <td>PN</td>
+      <td>ab-ba-kal-la</td>
+      <td>~,ta</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>sux</td>
+      <td>ba-zi</td>
+      <td></td>
+      <td>[{'v': 'ba', 'id': 'P100041.6.1.0', 'delim': '...</td>
+      <td>V/i</td>
+      <td></td>
+      <td>P100041.6.1</td>
+      <td>o 4</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>ba:zig</td>
+      <td>V/i</td>
+      <td>zig₃</td>
+      <td>ba:~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>P100041.8</td>
+      <td></td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>n</td>
+      <td>space</td>
+      <td>blank</td>
+      <td></td>
+      <td></td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>P100041.9</td>
+      <td></td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>1</td>
+      <td>impression</td>
+      <td>other</td>
+      <td></td>
+      <td></td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>sux</td>
+      <td>{d}šu-{d}suen</td>
+      <td></td>
+      <td>[{'det': 'semantic', 'pos': 'pre', 'seq': [{'v...</td>
+      <td>RN</td>
+      <td></td>
+      <td>P100041.12.1</td>
+      <td>seal 1 i 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>Šusuen</td>
+      <td>RN</td>
+      <td>{d}šu-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>12</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 28 columns</p>
+</div></div></div>
 </div>
 </div>
 </div>
@@ -702,6 +1695,293 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lang</th>
+      <th>form</th>
+      <th>delim</th>
+      <th>gdl</th>
+      <th>pos</th>
+      <th>ftype</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>id_text</th>
+      <th>date</th>
+      <th>...</th>
+      <th>epos</th>
+      <th>base</th>
+      <th>morph</th>
+      <th>extent</th>
+      <th>scope</th>
+      <th>state</th>
+      <th>cont</th>
+      <th>aform</th>
+      <th>id_line</th>
+      <th>lemma</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>sux</td>
+      <td>6(diš)</td>
+      <td></td>
+      <td>[{'n': 'n', 'form': '6(diš)', 'id': 'P100041.3...</td>
+      <td>n</td>
+      <td></td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>3</td>
+      <td>6(diš)[]NU</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sux</td>
+      <td>udu</td>
+      <td></td>
+      <td>[{'v': 'udu', 'id': 'P100041.3.2.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>N</td>
+      <td>udu</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>3</td>
+      <td>udu[sheep]N</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>sux</td>
+      <td>kišib₃</td>
+      <td></td>
+      <td>[{'v': 'kišib₃', 'id': 'P100041.4.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>N</td>
+      <td>kišib₃</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>4</td>
+      <td>kišib[seal]N</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sux</td>
+      <td>lu₂-{d}suen</td>
+      <td></td>
+      <td>[{'v': 'lu₂', 'id': 'P100041.4.2.0', 'delim': ...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>PN</td>
+      <td>lu₂-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>4</td>
+      <td>Lusuen[0]PN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>sux</td>
+      <td>ki</td>
+      <td></td>
+      <td>[{'v': 'ki', 'id': 'P100041.5.1.0'}]</td>
+      <td>N</td>
+      <td></td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>N</td>
+      <td>ki</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>5</td>
+      <td>ki[place]N</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>sux</td>
+      <td>ab-ba-kal-la-ta</td>
+      <td></td>
+      <td>[{'v': 'ab', 'id': 'P100041.5.2.0', 'delim': '...</td>
+      <td>PN</td>
+      <td></td>
+      <td>P100041.5.2</td>
+      <td>o 3</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>PN</td>
+      <td>ab-ba-kal-la</td>
+      <td>~,ta</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>5</td>
+      <td>Abbakala[0]PN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>sux</td>
+      <td>ba-zi</td>
+      <td></td>
+      <td>[{'v': 'ba', 'id': 'P100041.6.1.0', 'delim': '...</td>
+      <td>V/i</td>
+      <td></td>
+      <td>P100041.6.1</td>
+      <td>o 4</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>V/i</td>
+      <td>zig₃</td>
+      <td>ba:~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>6</td>
+      <td>zig[rise]V/i</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>P100041.8</td>
+      <td></td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>n</td>
+      <td>space</td>
+      <td>blank</td>
+      <td></td>
+      <td></td>
+      <td>8</td>
+      <td>break_logical</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>P100041.9</td>
+      <td></td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>1</td>
+      <td>impression</td>
+      <td>other</td>
+      <td></td>
+      <td></td>
+      <td>9</td>
+      <td>break_logical</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>sux</td>
+      <td>{d}šu-{d}suen</td>
+      <td></td>
+      <td>[{'det': 'semantic', 'pos': 'pre', 'seq': [{'v...</td>
+      <td>RN</td>
+      <td></td>
+      <td>P100041.12.1</td>
+      <td>seal 1 i 1</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>...</td>
+      <td>RN</td>
+      <td>{d}šu-{d}suen</td>
+      <td>~</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>12</td>
+      <td>Šusuen[1]RN</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 29 columns</p>
+</div></div></div>
 </div>
 </div>
 <div class="section" id="select-relevant-columns">
@@ -715,6 +1995,209 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lemma</th>
+      <th>id_text</th>
+      <th>id_line</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>date</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>ftype</th>
+      <th>metadata_source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6(diš)[]NU</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>3</td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>udu[sheep]N</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>3</td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>kišib[seal]N</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>4</td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Lusuen[0]PN</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>4</td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ki[place]N</td>
+      <td>epsd2/admin/ur3/P100041</td>
+      <td>5</td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>1(diš)[]NU</td>
+      <td>epsd2/admin/ur3/P100211</td>
+      <td>3</td>
+      <td>P100211.3.1</td>
+      <td>o 1</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>MHBA 51.2400</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>udu[sheep]N</td>
+      <td>epsd2/admin/ur3/P100211</td>
+      <td>3</td>
+      <td>P100211.3.2</td>
+      <td>o 1</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>MHBA 51.2400</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>a[water]N</td>
+      <td>epsd2/admin/ur3/P100211</td>
+      <td>3</td>
+      <td>P100211.3.3</td>
+      <td>o 1</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>MHBA 51.2400</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>x[NA]NA</td>
+      <td>epsd2/admin/ur3/P100211</td>
+      <td>3</td>
+      <td>P100211.3.4</td>
+      <td>o 1</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>MHBA 51.2400</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>sag[rare]V/i</td>
+      <td>epsd2/admin/ur3/P100211</td>
+      <td>3</td>
+      <td>P100211.3.5</td>
+      <td>o 1</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>MHBA 51.2400</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 12 columns</p>
+</div></div></div>
 </div>
 <p>We can simplify the ‘id_text’ column, because all documents derive from the same project (epsd2/admnin/u3adm).</p>
 <div class="cell docutils container">
@@ -724,6 +2207,343 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lemma</th>
+      <th>id_text</th>
+      <th>id_line</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>date</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>ftype</th>
+      <th>metadata_source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6(diš)[]NU</td>
+      <td>P100041</td>
+      <td>3</td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>udu[sheep]N</td>
+      <td>P100041</td>
+      <td>3</td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>kišib[seal]N</td>
+      <td>P100041</td>
+      <td>4</td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Lusuen[0]PN</td>
+      <td>P100041</td>
+      <td>4</td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ki[place]N</td>
+      <td>P100041</td>
+      <td>5</td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Abbakala[0]PN</td>
+      <td>P100041</td>
+      <td>5</td>
+      <td>P100041.5.2</td>
+      <td>o 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>zig[rise]V/i</td>
+      <td>P100041</td>
+      <td>6</td>
+      <td>P100041.6.1</td>
+      <td>o 4</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>break_logical</td>
+      <td>P100041</td>
+      <td>8</td>
+      <td>P100041.8</td>
+      <td></td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>break_logical</td>
+      <td>P100041</td>
+      <td>9</td>
+      <td>P100041.9</td>
+      <td></td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Šusuen[1]RN</td>
+      <td>P100041</td>
+      <td>12</td>
+      <td>P100041.12.1</td>
+      <td>seal 1 i 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>lugal[king]N</td>
+      <td>P100041</td>
+      <td>13</td>
+      <td>P100041.13.1</td>
+      <td>seal 1 i 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>kalag[strong]V/i</td>
+      <td>P100041</td>
+      <td>13</td>
+      <td>P100041.13.2</td>
+      <td>seal 1 i 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>lugal[king]N</td>
+      <td>P100041</td>
+      <td>14</td>
+      <td>P100041.14.1</td>
+      <td>seal 1 i 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Urim[1]SN</td>
+      <td>P100041</td>
+      <td>14</td>
+      <td>P100041.14.2</td>
+      <td>seal 1 i 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>lugal[king]N</td>
+      <td>P100041</td>
+      <td>15</td>
+      <td>P100041.15.1</td>
+      <td>seal 1 i 4</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>an[sky]N</td>
+      <td>P100041</td>
+      <td>15</td>
+      <td>P100041.15.2</td>
+      <td>seal 1 i 4</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>anubda[quarter]N</td>
+      <td>P100041</td>
+      <td>15</td>
+      <td>P100041.15.3</td>
+      <td>seal 1 i 4</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>limmu[four]NU</td>
+      <td>P100041</td>
+      <td>15</td>
+      <td>P100041.15.4</td>
+      <td>seal 1 i 4</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>UrKugnunak[0]PN</td>
+      <td>P100041</td>
+      <td>17</td>
+      <td>P100041.17.1</td>
+      <td>seal 1 ii 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>dubsar[scribe]N</td>
+      <td>P100041</td>
+      <td>18</td>
+      <td>P100041.18.1</td>
+      <td>seal 1 ii 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -732,6 +2552,209 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lemma</th>
+      <th>id_text</th>
+      <th>id_line</th>
+      <th>id_word</th>
+      <th>label</th>
+      <th>date</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>ftype</th>
+      <th>metadata_source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6(diš)[]NU</td>
+      <td>P100041</td>
+      <td>3</td>
+      <td>P100041.3.1</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>udu[sheep]N</td>
+      <td>P100041</td>
+      <td>3</td>
+      <td>P100041.3.2</td>
+      <td>o 1</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>kišib[seal]N</td>
+      <td>P100041</td>
+      <td>4</td>
+      <td>P100041.4.1</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Lusuen[0]PN</td>
+      <td>P100041</td>
+      <td>4</td>
+      <td>P100041.4.2</td>
+      <td>o 2</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ki[place]N</td>
+      <td>P100041</td>
+      <td>5</td>
+      <td>P100041.5.1</td>
+      <td>o 3</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>3995</th>
+      <td>Inabanum[0]PN</td>
+      <td>P100981</td>
+      <td>4</td>
+      <td>P100981.4.1</td>
+      <td>o 2</td>
+      <td>AS05 - 04 - 20</td>
+      <td>AS05 - 04 - 20</td>
+      <td>Amorites 16</td>
+      <td>Oriental Institute, University of Chicago, Chi...</td>
+      <td>OIM A02868</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3996</th>
+      <td>MAR.TU[westerner]N</td>
+      <td>P100981</td>
+      <td>4</td>
+      <td>P100981.4.2</td>
+      <td>o 2</td>
+      <td>AS05 - 04 - 20</td>
+      <td>AS05 - 04 - 20</td>
+      <td>Amorites 16</td>
+      <td>Oriental Institute, University of Chicago, Chi...</td>
+      <td>OIM A02868</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3997</th>
+      <td>1(diš)[]NU</td>
+      <td>P100981</td>
+      <td>5</td>
+      <td>P100981.5.1</td>
+      <td>o 3</td>
+      <td>AS05 - 04 - 20</td>
+      <td>AS05 - 04 - 20</td>
+      <td>Amorites 16</td>
+      <td>Oriental Institute, University of Chicago, Chi...</td>
+      <td>OIM A02868</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3998</th>
+      <td>sila[lamb]N</td>
+      <td>P100981</td>
+      <td>5</td>
+      <td>P100981.5.2</td>
+      <td>o 3</td>
+      <td>AS05 - 04 - 20</td>
+      <td>AS05 - 04 - 20</td>
+      <td>Amorites 16</td>
+      <td>Oriental Institute, University of Chicago, Chi...</td>
+      <td>OIM A02868</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3999</th>
+      <td>Urištaran[0]PN</td>
+      <td>P100981</td>
+      <td>6</td>
+      <td>P100981.6.1</td>
+      <td>o 4</td>
+      <td>AS05 - 04 - 20</td>
+      <td>AS05 - 04 - 20</td>
+      <td>Amorites 16</td>
+      <td>Oriental Institute, University of Chicago, Chi...</td>
+      <td>OIM A02868</td>
+      <td></td>
+      <td>BDTNS</td>
+    </tr>
+  </tbody>
+</table>
+<p>3465 rows × 12 columns</p>
+</div></div></div>
 </div>
 </div>
 <div class="section" id="save-results-in-csv-file-pickle">
@@ -743,6 +2766,9 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_1_output.csv&#39;</span><span class="p">)</span>
 <span class="n">words_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;output/part_1_output.p&#39;</span><span class="p">)</span>
+
+<span class="n">catalogue_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_1_catalogue.csv&#39;</span><span class="p">)</span>
+<span class="n">catalogue_data</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;output/part_1_catalogue.p&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -776,6 +2802,7 @@
         <div class='prev-next-bottom'>
             
     <a class='left-prev' id="prev-link" href="welcome.html" title="previous page">Sumerian Networks JupyterBook</a>
+    <a class='right-next' id="next-link" href="PartII-N-gramNeighborsoftheProperNames%28PN%29.html" title="next page">II. N-gram Neighbors of the Proper Names (PN)</a>
 
         </div>
         

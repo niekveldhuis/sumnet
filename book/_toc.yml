@@ -2,3 +2,9 @@ format: jb-book
 root: welcome
 chapters:
 - file: PartI-ExtractLemmatizationfromJSON
+- file: PartII-N-gramNeighborsoftheProperNames(PN)
+- file: PartIII-HarmonizingYearNameFormulaeandProcessingDates
+- file: PartIV-ArchiveClassification
+- file: PartV-IdentifyingAttributesoftheProperNames(PN)-ProfessionsandRoles
+- file: PartVI-GeographicNames
+- file: PartVII-CommoditiesCounting

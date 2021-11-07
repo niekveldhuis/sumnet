@@ -7,7 +7,7 @@
 # 
 # Below are lists of professions, roles, and family relationships.
 
-# In[1]:
+# In[ ]:
 
 
 # import necessary libraries
@@ -20,18 +20,18 @@ import re
 
 # ## 1 Find Neighbors
 # 
-# Below we are making a copy of the filtered dataframe to manipulate and add the neightbors column.
+# Below we are making a copy of the filtered dataframe to manipulate and add the neighbors column.
 # 
 # The commented out line can be used if you have a copy of the words_df dataframe from the previous section and you would like to load that instead of running part I.
 
-# In[2]:
+# In[ ]:
 
 
-words_df = pd.read_csv('output/part_1_output.csv')
-words_df = pd.read_pickle('output/part_1_output.p')
+#words_df = pd.read_pickle('output/part_1_output.p') #uncomment to read from local file
+words_df = pd.read_pickle('https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_1_output.p') # uncomment to read from online file
 
 
-# In[3]:
+# In[ ]:
 
 
 #List of professions, roles, family
@@ -113,7 +113,7 @@ family = ['šeš[brother]', 'szesz[brother]', 'dumu[son]', 'dumu-munus[daughter]
         'dumumunus[daughter]' , 'dam[spouse]']
 
 
-# In[4]:
+# In[ ]:
 
 
 def n_neighbors(data, n):
@@ -146,34 +146,7 @@ def n_neighbors(data, n):
     return n_neighbors_list
 
 
-# In[5]:
-
-
-def test_n_neighbors(data, n):
-   #create list to return, non-proper names will return empty lists
-    n_neighbors_list = [[] for i in range(len(data))]
-    
-    sorted_rows = data.sort_values(by=['id_text', 'id_line']).iterrows()
-    
-    current_line = 1
-    previous_text = ''
-    last_n_lines = []
-    for row_list in sorted_rows:
-      row = row_list[1]
-      if row['id_text'] != previous_text:
-        last_n_lines = [[row]]
-        current_line += 1
-        break
-        
-      if row['id_line'] != previous_text:
-        if len(last_n_lines) == n:
-          last_n_lines[0:(n-2)] = last_n_lines[1:(n-1)]
-          last_n_lines[n-1] = [row['lemma']]
-        else:
-          last_n_lines.append([row['lemma']])
-
-
-# In[6]:
+# In[ ]:
 
 
 words_df['prof?'] = words_df['lemma'].apply(lambda word: 'Yes' if (re.match('^[^\]]*', word)[0] + ']') in professions else 'No')
@@ -188,8 +161,13 @@ words_df
 
 
 # The next code block takes a very long time to run.
+# 
+# 1.   List item
+# 2.   List item
+# 
+# 
 
-# In[7]:
+# In[ ]:
 
 
 #call n_neighbor function to get neighbors from two lines above and below
@@ -199,13 +177,13 @@ words_df
 
 # Check output only has neighbors for proper names.
 
-# In[8]:
+# In[ ]:
 
 
 words_df[words_df['lemma'].str.contains("PN")]
 
 
-# In[9]:
+# In[ ]:
 
 
 words_df[~words_df['lemma'].str.contains("PN")]
@@ -213,7 +191,7 @@ words_df[~words_df['lemma'].str.contains("PN")]
 
 # The following line confirms there are no rows where the lemma is not a Proper Noun and is given neighbors.
 
-# In[10]:
+# In[ ]:
 
 
 sum([lst != [] for lst in words_df[~words_df['lemma'].str.contains("PN")]['neighbors']])
@@ -222,7 +200,7 @@ sum([lst != [] for lst in words_df[~words_df['lemma'].str.contains("PN")]['neigh
 # ## 2 Save Results in CSV file & Pickle
 # Here we will save the words_df output from parts 1 and 2.
 
-# In[11]:
+# In[ ]:
 
 
 words_df.to_csv('output/part_2_output.csv')

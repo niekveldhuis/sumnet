@@ -19,7 +19,7 @@ numbers_df = words_df[words_df['lemma'].str.contains('NU$')].copy()
 # 
 # 
 # 1.   Identify all consecutive sequences of number-lemmas ('number blocks') on a line.
-# 2.   Develop a method to convert the number blocks from (1) into integer or decimal format, and associate that number with the lemma that immediately follows it.
+# 2.   Develop a method to convert the number blocks from (1) into integer or decimal format.
 # 3.   Associate the lemma that immediately follows a number block from (1) with the converted integer from (2), and add this information back into the `words_df` frame.
 
 # ### 1.1 Identifying Number Blocks
@@ -126,7 +126,7 @@ def get_comm_count(word_index, comm_series, numb_df):
 
 # ### 1.3 Adding Number Values to words_df
 
-# Given that the previous steps have been performed, the final procedure is to associated the calculated number with a lemma in words_df. In particular, we attach it to the lemma that immediately follows the number block, but in the future, a more sophisticated method may be used to ensure it is attached to a commodity.
+# Given that the previous steps have been performed, the final procedure is to associated the calculated number with a lemma in `words_df`. In particular, we attach it to the lemma that immediately follows the number block, but in the future, a more sophisticated method may be used to ensure it is attached to a commodity.
 
 # In[ ]:
 
@@ -149,7 +149,6 @@ def add_comm_counts_to_words_df(words_frame, comm_idx, numb_df):
 # In[ ]:
 
 
-
 # Ensure the lemma string is in one of the correct formats.
 numbers_df = numbers_df.loc[( numbers_df['lemma'].str.match('[0-9/]*\(.*\)\[\]NU') | numbers_df['lemma'].str.match('.*\[.+\]NU'))]
 comm_idx = add_number_block_column(search_for_number_blocks(numbers_df), words_df)
@@ -167,7 +166,7 @@ out = add_comm_counts_to_words_df(words_df, comm_idx, numbers_df)
 # 
 # Secondly, lemmas with the same transliteration are occasionally mistaken for one another. This can be quite problematic since oftentimes the typical quantity of one is much greater than the other. To attempt to detect when this has occurred, we eliminate commodities whose largest count is over five times that of its second largest.
 # 
-# Another potential issue is that many lemmas only occur in a few years. In such a case they tell us very little about overall changes to the Ur III economy over the course of its existence. Therefore we exclude commodities that occur in fewer than 10 years.
+# Another potential issue is that many lemmas were only used in a few tablets from a limited selection of years. In such a case they tell us very little about overall changes to the Ur III economy throughout its existence. Therefore we exclude commodities that occur in fewer than 10 years.
 
 # In[ ]:
 
@@ -185,7 +184,7 @@ for lemma in list(set(valid_counts['lemma'])):
   years = list(valid_counts[valid_counts['lemma'] == lemma]['year'])
   if len(ordered_vals) > 1 and ordered_vals[0] > ordered_vals[1]*5: # filter out data with likely mislemmatization
     unreliable_lemmas.append(lemma)
-  elif '[unit]' in lemma: # if this is a unit of measurement for now we ignore it
+  elif '[unit]' in lemma: # if this is a unit of measurement, for now we ignore it
     unreliable_lemmas.append(lemma)
   elif len(years) < 10: # if a lemma only appears in a few years throw it out
     unreliable_lemmas.append(lemma)

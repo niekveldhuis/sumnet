@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>I. Extract Lemmatization from JSON &#8212; Sumerian Networks</title>
+    <title>I. Importing the Data and Extracting Lemmatization from JSON &#8212; Sumerian Networks</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -92,7 +92,7 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   I. Extract Lemmatization from JSON
+   I. Importing the Data and Extracting Lemmatization from JSON
   </a>
  </li>
  <li class="toctree-l1">
@@ -117,7 +117,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="PartVI-GeographicNames.html">
-   VI. Geographic Names
+   VI. Geography
   </a>
  </li>
  <li class="toctree-l1">
@@ -219,8 +219,8 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#download-oracc-data">
-   1 Download ORACC Data
+  <a class="reference internal nav-link" href="#import-oracc-data">
+   1 Import ORACC Data
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -246,19 +246,19 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#getting-the-metadata-data-for-the-tablets">
+     3.1 Getting the Metadata Data for the Tablets.
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-parse-oracc-json-function">
-     3.1 The
+     3.2 The
      <code class="docutils literal notranslate">
       <span class="pre">
        parse_ORACC_json()
       </span>
      </code>
      function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#getting-catalogue-data-for-the-oracc-drehem-tablets">
-     3.2 Getting Catalogue Data for the  ORACC Drehem Tablets.
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -328,81 +328,88 @@
         
               <div>
                 
-  <div class="section" id="i-extract-lemmatization-from-json">
-<h1>I. Extract Lemmatization from JSON<a class="headerlink" href="#i-extract-lemmatization-from-json" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="i-importing-the-data-and-extracting-lemmatization-from-json">
+<h1>I. Importing the Data and Extracting Lemmatization from JSON<a class="headerlink" href="#i-importing-the-data-and-extracting-lemmatization-from-json" title="Permalink to this headline">¶</a></h1>
 <p>The code in this section will parse the <a class="reference external" href="http://oracc.org">ORACC</a> JSON data of the Ur III corpus to extract lemmatization data.</p>
 <p>The output contains text IDs, line IDs, lemmas, and relevant other data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#create necessary directories</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;jsonzip&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># import necessary libraries</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import necessary libraries</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="c1"># import libraries for this section</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">json</span>
+
+<span class="c1"># import libraries for workbook</span>
+<span class="c1"># from tqdm.auto import tqdm</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="download-oracc-data">
-<h2>1 Download ORACC Data<a class="headerlink" href="#download-oracc-data" title="Permalink to this headline">¶</a></h2>
-<p>We will begin by downloading the lemmatization data from ORACC. This will be downloaded in the form of zipped JSON files which we will parse in the next subsection and store in a usable pandas dataframe.</p>
-<p>The ORACC database can be accessed via <a class="reference external" href="http://oracc.org/">http://oracc.org/</a>. As we are interested in the UR III data, we will use the project name to make the request. The project name corresponds to the last part of the url: <a class="reference external" href="http://oracc.org/epsd2/admin/ur3">http://oracc.org/epsd2/admin/ur3</a> and thus the project name is ‘epsd2/admin/u3admin’. We are accessing the JSON through the API and so our request URL is <a class="reference external" href="http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3">http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3</a>.</p>
-<p>If you are unfamiliar with using APIs and would like to learn how to do so in Python, this section of the Data 100 textbook might be helpful: <a class="reference external" href="http://www.textbook.ds100.org/ch/13/web_http.html">http://www.textbook.ds100.org/ch/13/web_http.html</a></p>
+<div class="section" id="import-oracc-data">
+<h2>1 Import ORACC Data<a class="headerlink" href="#import-oracc-data" title="Permalink to this headline">¶</a></h2>
+<p>We will begin by downloading the lemmatization data from ORACC. This will be downloaded in the form of zipped JSON files which we will parse in the next subsection and store in a pandas dataframe.</p>
+<p>The ORACC database can be accessed via <a class="reference external" href="http://oracc.org/">http://oracc.org/</a>. The Ur III data can be viewed and interacted with at <a class="reference external" href="http://oracc.org/epsd2/admin/ur3">http://oracc.org/epsd2/admin/ur3</a>.</p>
+<p>To manipulated the data in this workbook however, we will need to download the data into our workspace and then parse and store this data in a pandas dataframe. We will download the data through a REST API using the requests library, and then store the data in a zipfile locally which will be parsed in the next section.</p>
+<p>As we are accessing the JSON through the ORACC API, and the request URL is not the same as the viewing URL listed above. We will instead use: <a class="reference external" href="http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3">http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3</a>.</p>
+<p>If you are unfamiliar with using APIs and making HTTP requests and would like to learn how to do so in Python, this section of the Data 100 textbook might be helpful: <a class="reference external" href="http://www.textbook.ds100.org/ch/13/web_http.html">http://www.textbook.ds100.org/ch/13/web_http.html</a></p>
 <p><strong>NOTE:</strong> If you already have this data, you can skip this step as it can take quite a long time.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="s1">&#39;epsd2/admin/ur3&#39;</span> <span class="c1">#define project to download.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the url to download from and name the zipfile to be created</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3.zip&#39;</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;jsonzip/epsd2-admin-ur3.zip&#39;</span>
 
-<span class="n">CHUNK</span> <span class="o">=</span> <span class="mi">1024</span> <span class="c1">#define chunk size</span>
+<span class="c1"># Workbook Code</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">CHUNK = 1024 # Define chunk size</span>
+<span class="sd">with requests.get(url, stream=True) as request:</span>
+<span class="sd">    if request.status_code == 200:</span>
+<span class="sd">        #if file is accessible, download</span>
+<span class="sd">        tqdm.write(&#39;Saving &#39; + url + &#39; as &#39; + file_name)</span>
+<span class="sd">        total_size = int(request.headers.get(&#39;content-length&#39;, 0))</span>
+<span class="sd">        tqdm_handler = tqdm(total=total_size, unit=&#39;B&#39;, unit_scale=True, </span>
+<span class="sd">                            desc = &#39;epsd2/admin/ur3&#39;)</span>
+<span class="sd">        with open(file_name, &#39;wb&#39;) as zip_file:</span>
+<span class="sd">            #use tdqm to show download speed</span>
+<span class="sd">            for chunk in request.iter_content(chunk_size=CHUNK):</span>
+<span class="sd">                tqdm_handler.update(len(chunk))</span>
+<span class="sd">                zip_file.write(chunk)</span>
+<span class="sd">    else:</span>
+<span class="sd">        tqdm.write(&quot;WARNING: %s does not exist.&quot; % url)</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
-<span class="n">proj</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://build-oracc.museum.upenn.edu/json/</span><span class="si">%s</span><span class="s2">.zip&quot;</span> <span class="o">%</span> <span class="n">proj</span>
-<span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;jsonzip/</span><span class="si">%s</span><span class="s2">.zip&quot;</span> <span class="o">%</span> <span class="n">proj</span>
-<span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">request</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-        <span class="c1">#if file is accessible, download</span>
-        <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Saving &#39;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39; as &#39;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
-        <span class="n">total_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="n">tqdm_handler</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">total_size</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">project</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
-        <span class="c1">#use tdqm to show download speed</span>
-            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="n">CHUNK</span><span class="p">):</span>
-                <span class="n">tqdm_handler</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
-                <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;WARNING: </span><span class="si">%s</span><span class="s2"> does not exist.&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+<span class="c1"># Pedagogical Code</span>
+<span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">);</span> <span class="c1"># use a get request to get the data from the url</span>
+<span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">content</span><span class="p">);</span> <span class="c1"># write data into zipfile</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saving http://build-oracc.museum.upenn.edu/json/epsd2-admin-ur3.zip as jsonzip/epsd2-admin-ur3.zip
-</pre></div>
-</div>
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "e655443c3328462c967ea8cd17d03733", "version_major": 2, "version_minor": 0}
-</script></div>
 </div>
 </div>
 <div class="section" id="download-btdns-data">
 <h2>2 Download BTDNS Data<a class="headerlink" href="#download-btdns-data" title="Permalink to this headline">¶</a></h2>
-<p>Go to <a class="reference external" href="http://bdtns.filol.csic.es/index.php?p=formulario_urIII">http://bdtns.filol.csic.es/index.php?p=formulario_urIII</a>.</p>
-<p>In the Provenience drop down menu choose “Puzriš-Dagan” and hit “Search”. This will give a list of about 15,000 tablets from Drehem.</p>
-<p>Now, hit “Export” on the left and in the pop-up window select every box except “Transliteration of the whole text(s)”. Hit “export”. This will produce a .txt file and you’ll need to put it into the “bdtns_metadata” folder.</p>
-<p>The name of the .txt file changes everytime we download, so you’ll need to change the following cell.</p>
+<p>You can use the following instructions to obtain the data we need from the BDTNS database.</p>
+<ol class="simple">
+<li><p>Go to <a class="reference external" href="http://bdtns.filol.csic.es/index.php?p=formulario_urIII">http://bdtns.filol.csic.es/index.php?p=formulario_urIII</a>.</p></li>
+<li><p>In the Provenience drop down menu choose “Puzriš-Dagan” and hit “Search”. This will give a list of about 15,000 tablets from Drehem.</p></li>
+<li><p>Now, hit “Export” on the left and in the pop-up window select every box except “Transliteration of the whole text(s)”. Hit “export”. This will produce a .txt file and you’ll need to put it into the “bdtns_metadata” folder.</p></li>
+<li><p>The name of the .txt file changes everytime we download, so you may need to alter the code slightly to properly import the data in this notebook.</p></li>
+</ol>
+<p><strong>NOTE:</strong> The database’s downloading function is broken at the moment, however, so we will be using a previously obtained copy of the data hosted on our Github repository.</p>
 <div class="section" id="extract-data-from-txt-file">
 <h3>2.1 Extract Data from .txt file.<a class="headerlink" href="#extract-data-from-txt-file" title="Permalink to this headline">¶</a></h3>
+<p>We have an existing copy of the data stored in a text file on our Github repository (<a class="reference external" href="https://github.com/niekveldhuis/sumnet/blob/master/QUERY_catalogue.txt">https://github.com/niekveldhuis/sumnet/blob/master/QUERY_catalogue.txt</a>).</p>
+<p>As with the last subsection, we will be using an API to access our data, so the url is slightly different (<a class="reference external" href="https://raw.githubusercontent.com/niekveldhuis/sumnet/master/QUERY_catalogue.txt">https://raw.githubusercontent.com/niekveldhuis/sumnet/master/QUERY_catalogue.txt</a>). Using pandas, we can actually download the data without the use of the requests library and can import the data into a pandas dataframe to work with it immediately.</p>
+<p>The data is indexed both on BDTNS number ids and CDLI P-number ids. The ORACC data is indexed by P-numbers and so we will merge the data in the next subsection using these ids.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/niekveldhuis/sumnet/master/QUERY_catalogue.txt&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;CDLI_no&#39;</span><span class="p">)</span>
+
+<span class="c1"># reset the index to the p numbers</span>
+<span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;CDLI_no&#39;</span><span class="p">)</span>  
 <span class="n">bdtns_catalogue_data</span>
 </pre></div>
 </div>
@@ -538,12 +545,13 @@
 </div>
 <div class="section" id="filtering-data">
 <h3>2.2 Filtering Data<a class="headerlink" href="#filtering-data" title="Permalink to this headline">¶</a></h3>
-<p>Filter data for Puzriš-Dagān tablets and drop tablets with null p-numbers or without dates.</p>
+<p>Here we are filtering the BDTNS data for Puzriš-Dagān tablets and drop tablets with null p-numbers or without dates. This will ensure we keep only the metadata relevant for our purposes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="p">[(</span><span class="n">bdtns_catalogue_data</span><span class="p">[</span><span class="s1">&#39;Provenience&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># select for tablets from Puzriš-Dagān/Drehem</span>
+<span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="p">[(</span><span class="n">bdtns_catalogue_data</span><span class="p">[</span><span class="s1">&#39;Provenience&#39;</span><span class="p">]</span>
     <span class="o">==</span><span class="s1">&#39;Puzriš-Dagān&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bdtns_catalogue_data</span><span class="p">[</span><span class="s1">&#39;Provenience&#39;</span><span class="p">]</span>
-    <span class="o">==</span><span class="s1">&#39;Puzriš-Dagān (?)&#39;</span><span class="p">)]</span> <span class="c1">#select for Puzriš-Dagān</span>
+    <span class="o">==</span><span class="s1">&#39;Puzriš-Dagān (?)&#39;</span><span class="p">)]</span> 
 
 <span class="c1">#select for non-null p_numbers and non-null dates</span>
 <span class="n">bdtns_catalogue_data</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">bdtns_catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="p">:]</span>
@@ -685,68 +693,19 @@
 </div>
 <div class="section" id="parsing-the-data">
 <h2>3 Parsing the Data<a class="headerlink" href="#parsing-the-data" title="Permalink to this headline">¶</a></h2>
-<p>In this subsection we will parse the imported <code class="docutils literal notranslate"><span class="pre">json</span></code> data into a list we can later use to construct a <code class="docutils literal notranslate"><span class="pre">pandas</span></code> dataframe.</p>
-<div class="section" id="the-parse-oracc-json-function">
-<h3>3.1 The <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function<a class="headerlink" href="#the-parse-oracc-json-function" title="Permalink to this headline">¶</a></h3>
-<p>Here we define the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function, which will recursively parse the <code class="docutils literal notranslate"><span class="pre">json</span></code> files provided by ORACC until it finds the relevant lemma data. It takes in the an ORACC json data structure, the associated meta_data, and some necessary keys and returns a list of lemma python dictionary entries which we can use to constuct a pandas dataframe.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">json</span></code> files consist of a hierarchy of <code class="docutils literal notranslate"><span class="pre">cdl</span></code> nodes; only the nodes which have ‘f’ or ‘strict’ keys contain lemmatization data. The function goes down this hierarchy by recursively calling itself when a new <code class="docutils literal notranslate"><span class="pre">cdl</span></code> node is encountered. For more information about the data hierarchy in the <a class="reference external" href="http://oracc.org">ORACC</a> <code class="docutils literal notranslate"><span class="pre">json</span></code> files, see <a class="reference external" href="http://oracc.org/doc/opendata/index.html">ORACC Open Data</a>.</p>
-<p>The argument of the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function is a <code class="docutils literal notranslate"><span class="pre">JSON</span></code> object, essentially a Python dictionary that initially contains the entire contents of the original JSON file. The code works with a list of <code class="docutils literal notranslate"><span class="pre">JSON</span></code> dictionaries associated with the <code class="docutils literal notranslate"><span class="pre">cdl</span></code> key. Iterating through these dictionaries, if a dictionary contains another <code class="docutils literal notranslate"><span class="pre">cdl</span></code> node, the function calls itself with this lower-level dictionary as its argument <code class="docutils literal notranslate"><span class="pre">lemmatized_data_json</span></code>. Then the function will continue to recurse deeper into the data until it does not encounter any more <code class="docutils literal notranslate"><span class="pre">cdl</span></code> keys. Then, we are left with individual words. The code checks for a key <code class="docutils literal notranslate"><span class="pre">f</span></code>, and appendeds it’s data as a <code class="docutils literal notranslate"><span class="pre">lemma</span></code> to the list <code class="docutils literal notranslate"><span class="pre">lemma_list</span></code>. The list <code class="docutils literal notranslate"><span class="pre">lemm_list</span></code>, which is initiated at the start of the function, is extended with the new lemmas at the end of each recursion, where each <code class="docutils literal notranslate"><span class="pre">lemma</span></code> dictionary represents a single word.</p>
-<p>The variable <code class="docutils literal notranslate"><span class="pre">id_text</span></code> consists of a project abbreviation, such as <code class="docutils literal notranslate"><span class="pre">blms</span></code> or <code class="docutils literal notranslate"><span class="pre">cams/gkab</span></code> plus a text ID, in the format <code class="docutils literal notranslate"><span class="pre">cams/gkab/P338616</span></code> or <code class="docutils literal notranslate"><span class="pre">dcclt/Q000039</span></code>.</p>
-<p>The variable <code class="docutils literal notranslate"><span class="pre">ftype</span></code> is used to denote if a node is a year name (<code class="docutils literal notranslate"><span class="pre">yn</span></code>) or not.</p>
-<p>The field <code class="docutils literal notranslate"><span class="pre">word_id</span></code> consists of three parts, namely a text ID, line ID, and word ID, in the format <code class="docutils literal notranslate"><span class="pre">Q000039.76.2</span></code> meaning: the second word in line 76 of text object <code class="docutils literal notranslate"><span class="pre">Q000039</span></code>. Note that <code class="docutils literal notranslate"><span class="pre">76</span></code> is not a line number strictly speaking but an object reference within the text object. Things like horizontal rulings, columns, and breaks also get object references. The <code class="docutils literal notranslate"><span class="pre">word_id</span></code> field allows us to put lines, breaks, and horizontal drawings together in the proper order.</p>
-<p>The field <code class="docutils literal notranslate"><span class="pre">label</span></code> is a human-legible label that refers to a line or another part of the text; it may look like <code class="docutils literal notranslate"><span class="pre">o</span> <span class="pre">i</span> <span class="pre">23</span></code> (obverse column 1 line 23) or <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">v</span> <span class="pre">23'</span></code> (reverse column 5 line 23 prime). The <code class="docutils literal notranslate"><span class="pre">label</span></code> field is used in online <a class="reference external" href="http://oracc.org">ORACC</a> editions to indicate line numbers. The <code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">dates_references</span></code>, <code class="docutils literal notranslate"><span class="pre">primary_publication</span></code>, <code class="docutils literal notranslate"><span class="pre">collection</span></code>, and <code class="docutils literal notranslate"><span class="pre">museum_no</span></code> fields are also metadata which were taken from the ORACC catalogue.</p>
-<p>The fields <code class="docutils literal notranslate"><span class="pre">extent</span></code>, <code class="docutils literal notranslate"><span class="pre">scope</span></code>, and <code class="docutils literal notranslate"><span class="pre">state</span></code> give metatextual data about the condition of the object; they capture the number of broken lines or columns and similar information.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">):</span>
-    <span class="n">lemma_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">JSONobject</span> <span class="ow">in</span> <span class="n">lemmatized_data_json</span><span class="p">[</span><span class="s1">&#39;cdl&#39;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="s1">&#39;cdl&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span> 
-            <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">JSONobject</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>
-        <span class="k">if</span> <span class="s1">&#39;label&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span>
-            <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;f&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span>
-            <span class="n">lemma</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;ftype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ftype&#39;</span><span class="p">)</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;ref&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
-            <span class="n">lemma_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;strict&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span> <span class="ow">and</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
-            <span class="n">lemma</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">JSONobject</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dollar_keys</span><span class="p">}</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;ref&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
-            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
-            <span class="n">lemma_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">lemma_list</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="getting-catalogue-data-for-the-oracc-drehem-tablets">
-<h3>3.2 Getting Catalogue Data for the  ORACC Drehem Tablets.<a class="headerlink" href="#getting-catalogue-data-for-the-oracc-drehem-tablets" title="Permalink to this headline">¶</a></h3>
+<p>In this subsection we will merge the metadata we have on the Drehem tablets and parse the imported <code class="docutils literal notranslate"><span class="pre">json</span></code> data into a list we can later use to construct a <code class="docutils literal notranslate"><span class="pre">pandas</span></code> dataframe.</p>
+<div class="section" id="getting-the-metadata-data-for-the-tablets">
+<h3>3.1 Getting the Metadata Data for the Tablets.<a class="headerlink" href="#getting-the-metadata-data-for-the-tablets" title="Permalink to this headline">¶</a></h3>
 <p>Before constructing our dataframe of lemmatized data, we will construct a dataframe of Drehem tablet metadata to filter and augment the data with.</p>
-<p>We do this by loading the data from the <code class="docutils literal notranslate"><span class="pre">catalogue.json</span></code> into a dataframe and selecting the pnumbers where the provenience is indicated to be Puzriš-Dagan or modern Drehem.</p>
+<p>We do this by loading the data from the <code class="docutils literal notranslate"><span class="pre">catalogue.json</span></code> into a dataframe and selecting the p-numbers where the provenience is indicated to be Puzriš-Dagan or modern Drehem. We will then replace the ORACC metadata with the BDTNS metadata where both databases have metadata and list the metadata source. Finally, we select the desired columns</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;jsonzip/</span><span class="si">%s</span><span class="s2">.zip&quot;</span> <span class="o">%</span> <span class="n">proj</span><span class="p">)</span>    <span class="c1"># create a Zipfile object</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># open the zipfile to read</span>
+<span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s1">&#39;jsonzip/epsd2-admin-ur3.zip&#39;</span><span class="p">)</span>
 
-<span class="n">files</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
-<span class="n">oracc_json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/catalogue.json&quot;</span> <span class="o">%</span> <span class="n">project</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="c1">#read and decode the json file of one particular text</span>
+<span class="c1">#read and decode the project catalog json and store data in oracc_catalogue_json</span>
+<span class="n">oracc_json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;epsd2/admin/ur3/catalogue.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> 
 <span class="n">oracc_catalogue_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">oracc_json_str</span><span class="p">)[</span><span class="s1">&#39;members&#39;</span><span class="p">]</span>
-
 <span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <span class="c1">#create combined catalogue_data</span>
@@ -765,11 +724,11 @@
 <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">in_bdtns_index</span><span class="p">,</span> <span class="s1">&#39;provenience&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bdtns_catalogue_data</span><span class="p">[</span><span class="s1">&#39;Provenience&#39;</span><span class="p">]</span>
 <span class="n">catalogue_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BDTNS&#39;</span> <span class="k">if</span> <span class="n">in_bdtns</span> <span class="k">else</span> <span class="s1">&#39;ORACC&#39;</span> <span class="k">for</span> <span class="n">in_bdtns</span> <span class="ow">in</span> <span class="n">in_bdtns_index</span><span class="p">]</span>
 
-
+<span class="c1">#select necessary columns</span>
 <span class="n">catalogue_data</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="p">[[</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">,</span> <span class="s1">&#39;dates_referenced&#39;</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">,</span>
                                  <span class="s1">&#39;primary_publication&#39;</span><span class="p">,</span> <span class="s1">&#39;museum_no&#39;</span><span class="p">,</span> <span class="s1">&#39;provenience&#39;</span><span class="p">,</span>
                                  <span class="s1">&#39;metadata_source&#39;</span><span class="p">]]</span>
-
+<span class="c1">#display metadata</span>
 <span class="n">catalogue_data</span>
 </pre></div>
 </div>
@@ -919,9 +878,84 @@
 </div></div></div>
 </div>
 </div>
+<div class="section" id="the-parse-oracc-json-function">
+<h3>3.2 The <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function<a class="headerlink" href="#the-parse-oracc-json-function" title="Permalink to this headline">¶</a></h3>
+<p>Here we define the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function, which will recursively parse the <code class="docutils literal notranslate"><span class="pre">json</span></code> files provided by ORACC until it finds the relevant lemma data. It takes in the an ORACC json data structure, the associated meta_data, and some necessary keys and returns a list of lemma python dictionary entries which we can use to constuct a pandas dataframe.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">json</span></code> files consist of a hierarchy of <code class="docutils literal notranslate"><span class="pre">cdl</span></code> nodes; only the nodes which have ‘f’ or ‘strict’ keys contain lemmatization data. The function goes down this hierarchy by recursively calling itself when a new <code class="docutils literal notranslate"><span class="pre">cdl</span></code> node is encountered. For more information about the data hierarchy in the <a class="reference external" href="http://oracc.org">ORACC</a> <code class="docutils literal notranslate"><span class="pre">json</span></code> files, see <a class="reference external" href="http://oracc.org/doc/opendata/index.html">ORACC Open Data</a>.</p>
+<p>We are left with lemma data dictionaries with a series of attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id_text</span></code>: consists of a project abbreviation, such as <code class="docutils literal notranslate"><span class="pre">blms</span></code> or <code class="docutils literal notranslate"><span class="pre">cams/gkab</span></code> plus a text ID, in the format <code class="docutils literal notranslate"><span class="pre">cams/gkab/P338616</span></code> or <code class="docutils literal notranslate"><span class="pre">dcclt/Q000039</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ftype</span></code>: denotes if a node is a year name (<code class="docutils literal notranslate"><span class="pre">yn</span></code>) or not.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">word_id</span></code>: consists of text ID, line ID, and word ID, in the format <code class="docutils literal notranslate"><span class="pre">Q000039.76.2</span></code> ie. the second word in line 76 of text object <code class="docutils literal notranslate"><span class="pre">Q000039</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span></code>: human-legible label that refers to a line or another part of the text; eg. <code class="docutils literal notranslate"><span class="pre">o</span> <span class="pre">i</span> <span class="pre">23</span></code> (obverse column 1 line 23) or <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">v</span> <span class="pre">23'</span></code> (reverse column 5 line 23 prime). The <code class="docutils literal notranslate"><span class="pre">label</span></code> field is used in online <a class="reference external" href="http://oracc.org">ORACC</a> editions to indicate line numbers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extent</span></code>, <code class="docutils literal notranslate"><span class="pre">scope</span></code>, and <code class="docutils literal notranslate"><span class="pre">state</span></code>: gives metatextual data about the condition of the object; captures the number of broken lines or columns and similar information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">dates_references</span></code>, <code class="docutils literal notranslate"><span class="pre">primary_publication</span></code>, <code class="docutils literal notranslate"><span class="pre">collection</span></code>, and <code class="docutils literal notranslate"><span class="pre">museum_no</span></code>: metadata from the ORACC and BDTNS catalogues.</p></li>
+</ul>
+<p><em>Note:</em> <code class="docutils literal notranslate"><span class="pre">76</span></code> in the <code class="docutils literal notranslate"><span class="pre">word_id</span></code> is not a line number strictly speaking but an object reference within the text object. Things like horizontal rulings, columns, and breaks also get object references. The <code class="docutils literal notranslate"><span class="pre">word_id</span></code> field allows us to put lines, breaks, and horizontal drawings together in the proper order.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A function to parse the ORACC json lemmatized data which has a specific</span>
+<span class="sd">    format outlined here: http://oracc.museum.upenn.edu/doc/opendata/json/index.html</span>
+<span class="sd">    This function recursively parses objects associated with the &#39;cdl&#39; key to </span>
+<span class="sd">    extend the lemma_list. Each identified lemma&#39;s data is added as a new entry</span>
+<span class="sd">    in the lemma list, which is returned at the end of the function.</span>
+<span class="sd">    </span>
+<span class="sd">    Inputs:</span>
+<span class="sd">    lemmatized_data_json: JSON object containing lemmatized data for a single </span>
+<span class="sd">                          tablet from ORACC. Must be recursively called to </span>
+<span class="sd">                          access lemma data. Lemma data objects can be </span>
+<span class="sd">                          identified with the presence of an &#39;f&#39; key or &#39;strict&#39;</span>
+<span class="sd">                          key</span>
+<span class="sd">    meta_data: a dictionary with various metadata fields pertaining to the given</span>
+<span class="sd">               tablet</span>
+<span class="sd">    dollar_keys: a list of keys used to add data to the &#39;strict&#39; lemmas</span>
+
+<span class="sd">    Outputs:</span>
+<span class="sd">    lemma_list: a list of dictionaries where each entry corresponds to a single </span>
+<span class="sd">                lemma. This list is extended at the end of each recursion.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lemma_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">JSONobject</span> <span class="ow">in</span> <span class="n">lemmatized_data_json</span><span class="p">[</span><span class="s1">&#39;cdl&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s1">&#39;cdl&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span> 
+            <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">JSONobject</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s1">&#39;label&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span>
+            <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;f&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span><span class="p">:</span>
+            <span class="n">lemma</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;ftype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ftype&#39;</span><span class="p">)</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;ref&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
+            <span class="n">lemma_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;strict&#39;</span> <span class="ow">in</span> <span class="n">JSONobject</span> <span class="ow">and</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+            <span class="n">lemma</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">JSONobject</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dollar_keys</span><span class="p">}</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_word&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">JSONobject</span><span class="p">[</span><span class="s1">&#39;ref&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
+            <span class="n">lemma</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
+            <span class="n">lemma_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lemma_list</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="section" id="call-the-parse-oracc-json-function-for-every-json-file">
 <h3>3.3 Call the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function for every <code class="docutils literal notranslate"><span class="pre">JSON</span></code> file<a class="headerlink" href="#call-the-parse-oracc-json-function-for-every-json-file" title="Permalink to this headline">¶</a></h3>
-<p>Here we will use the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> and the <code class="docutils literal notranslate"><span class="pre">catalogue</span></code> dataframe to construct the <code class="docutils literal notranslate"><span class="pre">words_df</span></code> dataframe which we will be using throughout the rest of the code. The project <code class="docutils literal notranslate"><span class="pre">zip</span></code> file downloaded earlier contains a directory that is called <code class="docutils literal notranslate"><span class="pre">corpusjson</span></code> that contains a JSON file for every text that is available in that corpus. The files are named using their text IDs in the pattern <code class="docutils literal notranslate"><span class="pre">P######.json</span></code> (or <code class="docutils literal notranslate"><span class="pre">Q######.json</span></code> or <code class="docutils literal notranslate"><span class="pre">X######.json</span></code>).</p>
+<p>Here we will use the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> and the <code class="docutils literal notranslate"><span class="pre">catalogue</span></code> dataframe to construct the <code class="docutils literal notranslate"><span class="pre">words_df</span></code> dataframe which we will be using throughout the rest of the code.</p>
+<p>The project <code class="docutils literal notranslate"><span class="pre">zip</span></code> file downloaded earlier contains a directory that is called <code class="docutils literal notranslate"><span class="pre">corpusjson</span></code> that contains a JSON file for every text that is available in that corpus. The files are named using their text IDs in the pattern <code class="docutils literal notranslate"><span class="pre">P######.json</span></code> (or <code class="docutils literal notranslate"><span class="pre">Q######.json</span></code> or <code class="docutils literal notranslate"><span class="pre">X######.json</span></code>).</p>
 <p>The function <code class="docutils literal notranslate"><span class="pre">namelist()</span></code> of the <code class="docutils literal notranslate"><span class="pre">zipfile</span></code> package is used to create a list of the names of all the files in the ZIP. From this list we select all the file names in the <code class="docutils literal notranslate"><span class="pre">corpusjson</span></code> directory with extension <code class="docutils literal notranslate"><span class="pre">.json</span></code> (this way we exclude the name of the directory itself).</p>
 <p>Each of these files is read from the <code class="docutils literal notranslate"><span class="pre">zip</span></code> file and loaded with the command <code class="docutils literal notranslate"><span class="pre">json.loads()</span></code>, which transforms the string into a proper JSON object.</p>
 <p>This JSON object (essentially a Python dictionary), which is called <code class="docutils literal notranslate"><span class="pre">data_json</span></code> is now sent to the <code class="docutils literal notranslate"><span class="pre">parse_ORACC_json()</span></code> function. The function adds lemmata to the <code class="docutils literal notranslate"><span class="pre">lemm_l</span></code> list. In the end, <code class="docutils literal notranslate"><span class="pre">lemm_l</span></code> will contain as many list elements as there are words in all the texts in the projects requested.</p>
@@ -933,30 +967,30 @@
 <span class="n">dollar_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;extent&#39;</span><span class="p">,</span> <span class="s1">&#39;scope&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">]</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>       <span class="c1"># create a Zipfile object</span>
+  <span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>       <span class="c1"># create a Zipfile object</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;does not exist or is not a proper ZIP file&#39;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;does not exist or is not a proper ZIP file&#39;</span><span class="p">)</span>
 
 <span class="n">drehem_list_oracc</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">project</span> <span class="o">+</span> <span class="s1">&#39;/corpusjson/&#39;</span> <span class="o">+</span> <span class="n">p_number</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span> <span class="k">for</span> <span class="n">p_number</span> <span class="ow">in</span> <span class="n">drehem_list_oracc</span><span class="p">]</span>    <span class="c1">#that holds all the P, Q, and X numbers.</span>
 <span class="k">for</span> <span class="n">lemma_file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">project</span><span class="p">):</span>       <span class="c1">#iterate over the file names</span>
-    <span class="n">id_text</span> <span class="o">=</span> <span class="n">project</span> <span class="o">+</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># id_text is, for instance, blms/P414332</span>
+  <span class="n">id_text</span> <span class="o">=</span> <span class="n">project</span> <span class="o">+</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># id_text is, for instance, blms/P414332</span>
 
-    <span class="n">p_number</span> <span class="o">=</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_text</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;dates_referenced&#39;</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;primary_publication&#39;</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
-    <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
+  <span class="n">p_number</span> <span class="o">=</span> <span class="n">lemma_file</span><span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_text</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;dates_references&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;dates_referenced&#39;</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;primary_publication&#39;</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;collection&#39;</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;museum_no&#39;</span><span class="p">]</span>
+  <span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalogue_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">p_number</span><span class="p">][</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lemma_file</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>         <span class="c1">#read and decode the json file of one particular text</span>
-        <span class="n">lemmatized_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>                <span class="c1"># make it into a json object (essentially a dictionary)</span>
-        <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>               <span class="c1"># and send to the parse_ORACC_json() function</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">id_text</span><span class="p">,</span> <span class="s1">&#39;is not available or not complete&#39;</span><span class="p">)</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">json_str</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lemma_file</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>         <span class="c1">#read and decode the json file of one particular text</span>
+    <span class="n">lemmatized_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>                <span class="c1"># make it into a json object (essentially a dictionary)</span>
+    <span class="n">lemma_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parse_ORACC_json</span><span class="p">(</span><span class="n">lemmatized_data_json</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">,</span> <span class="n">dollar_keys</span><span class="p">))</span>               <span class="c1"># and send to the parse_ORACC_json() function</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">id_text</span><span class="p">,</span> <span class="s1">&#39;is not available or not complete&#39;</span><span class="p">)</span>
 
 <span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -964,7 +998,7 @@
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "f189aee2b00445d798343b471f8a70cf", "version_major": 2, "version_minor": 0}
+{"model_id": "1a14ffb7023941079a84f5e130c9a55e", "version_major": 2, "version_minor": 0}
 </script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
@@ -1015,7 +1049,13 @@
       <th>label</th>
       <th>id_text</th>
       <th>date</th>
-      <th>...</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>metadata_source</th>
+      <th>cf</th>
+      <th>gw</th>
       <th>sense</th>
       <th>norm0</th>
       <th>epos</th>
@@ -1041,7 +1081,13 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1065,7 +1111,13 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>udu</td>
+      <td>sheep</td>
       <td>sheep</td>
       <td>udu</td>
       <td>N</td>
@@ -1089,7 +1141,13 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>kišib</td>
+      <td>seal</td>
       <td>cylinder seal</td>
       <td>kišib</td>
       <td>N</td>
@@ -1113,7 +1171,13 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Lusuen</td>
+      <td>0</td>
       <td>0</td>
       <td>Lusuen</td>
       <td>PN</td>
@@ -1137,7 +1201,13 @@
       <td>o 3</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>ki</td>
+      <td>place</td>
       <td>place</td>
       <td>ki</td>
       <td>N</td>
@@ -1172,6 +1242,12 @@
       <td>...</td>
       <td>...</td>
       <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
     </tr>
     <tr>
       <th>594695</th>
@@ -1185,7 +1261,13 @@
       <td>l.e. 1</td>
       <td>epsd2/admin/ur3/P481395</td>
       <td>SS02 - 02 - 00</td>
-      <td>...</td>
+      <td>SS02 - 02 - 00</td>
+      <td>unpublished unassigned ?</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>UC CSC 1954</td>
+      <td>BDTNS</td>
+      <td>gud</td>
+      <td>ox</td>
       <td>bull, ox</td>
       <td>gud</td>
       <td>N</td>
@@ -1209,7 +1291,13 @@
       <td>l.e. 1</td>
       <td>epsd2/admin/ur3/P481395</td>
       <td>SS02 - 02 - 00</td>
-      <td>...</td>
+      <td>SS02 - 02 - 00</td>
+      <td>unpublished unassigned ?</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>UC CSC 1954</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1233,7 +1321,13 @@
       <td>l.e. 1</td>
       <td>epsd2/admin/ur3/P481395</td>
       <td>SS02 - 02 - 00</td>
-      <td>...</td>
+      <td>SS02 - 02 - 00</td>
+      <td>unpublished unassigned ?</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>UC CSC 1954</td>
+      <td>BDTNS</td>
+      <td>anše</td>
+      <td>equid</td>
       <td>equid, donkey</td>
       <td>anše</td>
       <td>N</td>
@@ -1257,7 +1351,13 @@
       <td>a 1</td>
       <td>epsd2/admin/ur3/P517012</td>
       <td></td>
-      <td>...</td>
+      <td></td>
+      <td>CDLI Seals 013964 (composite)</td>
+      <td></td>
+      <td></td>
+      <td>ORACC</td>
+      <td>Šusuen</td>
+      <td>1</td>
       <td>1</td>
       <td>Šusuen</td>
       <td>RN</td>
@@ -1281,7 +1381,13 @@
       <td>a 2</td>
       <td>epsd2/admin/ur3/P517012</td>
       <td></td>
-      <td>...</td>
+      <td></td>
+      <td>CDLI Seals 013964 (composite)</td>
+      <td></td>
+      <td></td>
+      <td>ORACC</td>
+      <td>Abumilum</td>
+      <td>0</td>
       <td>0</td>
       <td>Abumilum</td>
       <td>PN</td>
@@ -1413,7 +1519,14 @@
       <th>label</th>
       <th>id_text</th>
       <th>date</th>
-      <th>...</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>metadata_source</th>
+      <th>cf</th>
+      <th>gw</th>
+      <th>sense</th>
       <th>norm0</th>
       <th>epos</th>
       <th>base</th>
@@ -1439,7 +1552,14 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1463,7 +1583,14 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>udu</td>
+      <td>sheep</td>
+      <td>sheep</td>
       <td>udu</td>
       <td>N</td>
       <td>udu</td>
@@ -1487,7 +1614,14 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>kišib</td>
+      <td>seal</td>
+      <td>cylinder-seal</td>
       <td>kišib</td>
       <td>N</td>
       <td>kišib₃</td>
@@ -1511,7 +1645,14 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Lusuen</td>
+      <td>0</td>
+      <td>0</td>
       <td>Lusuen</td>
       <td>PN</td>
       <td>lu₂-{d}suen</td>
@@ -1535,7 +1676,14 @@
       <td>o 3</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>ki</td>
+      <td>place</td>
+      <td>place</td>
       <td>ki</td>
       <td>N</td>
       <td>ki</td>
@@ -1559,7 +1707,14 @@
       <td>o 3</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Abbakala</td>
+      <td>0</td>
+      <td>0</td>
       <td>Abbakala,ta</td>
       <td>PN</td>
       <td>ab-ba-kal-la</td>
@@ -1583,7 +1738,14 @@
       <td>o 4</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>zig</td>
+      <td>rise</td>
+      <td>to-rise</td>
       <td>ba:zig</td>
       <td>V/i</td>
       <td>zig₃</td>
@@ -1607,7 +1769,14 @@
       <td></td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1631,7 +1800,14 @@
       <td></td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1655,7 +1831,14 @@
       <td>seal 1 i 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Šusuen</td>
+      <td>1</td>
+      <td>1</td>
       <td>Šusuen</td>
       <td>RN</td>
       <td>{d}šu-{d}suen</td>
@@ -1669,7 +1852,6 @@
     </tr>
   </tbody>
 </table>
-<p>10 rows × 28 columns</p>
 </div></div></div>
 </div>
 </div>
@@ -1724,7 +1906,15 @@
       <th>label</th>
       <th>id_text</th>
       <th>date</th>
-      <th>...</th>
+      <th>dates_references</th>
+      <th>publication</th>
+      <th>collection</th>
+      <th>museum_no</th>
+      <th>metadata_source</th>
+      <th>cf</th>
+      <th>gw</th>
+      <th>sense</th>
+      <th>norm0</th>
       <th>epos</th>
       <th>base</th>
       <th>morph</th>
@@ -1750,7 +1940,15 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1774,7 +1972,15 @@
       <td>o 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>udu</td>
+      <td>sheep</td>
+      <td>sheep</td>
+      <td>udu</td>
       <td>N</td>
       <td>udu</td>
       <td>~</td>
@@ -1798,7 +2004,15 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>kišib</td>
+      <td>seal</td>
+      <td>cylinder-seal</td>
+      <td>kišib</td>
       <td>N</td>
       <td>kišib₃</td>
       <td>~</td>
@@ -1822,7 +2036,15 @@
       <td>o 2</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Lusuen</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Lusuen</td>
       <td>PN</td>
       <td>lu₂-{d}suen</td>
       <td>~</td>
@@ -1846,7 +2068,15 @@
       <td>o 3</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>ki</td>
+      <td>place</td>
+      <td>place</td>
+      <td>ki</td>
       <td>N</td>
       <td>ki</td>
       <td>~</td>
@@ -1870,7 +2100,15 @@
       <td>o 3</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Abbakala</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Abbakala,ta</td>
       <td>PN</td>
       <td>ab-ba-kal-la</td>
       <td>~,ta</td>
@@ -1894,7 +2132,15 @@
       <td>o 4</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>zig</td>
+      <td>rise</td>
+      <td>to-rise</td>
+      <td>ba:zig</td>
       <td>V/i</td>
       <td>zig₃</td>
       <td>ba:~</td>
@@ -1918,7 +2164,15 @@
       <td></td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1942,7 +2196,15 @@
       <td></td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -1966,7 +2228,15 @@
       <td>seal 1 i 1</td>
       <td>epsd2/admin/ur3/P100041</td>
       <td>SSXX - 00 - 00</td>
-      <td>...</td>
+      <td>SSXX - 00 - 00</td>
+      <td>AAS 053</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AO 20313</td>
+      <td>BDTNS</td>
+      <td>Šusuen</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Šusuen</td>
       <td>RN</td>
       <td>{d}šu-{d}suen</td>
       <td>~</td>
@@ -1980,7 +2250,6 @@
     </tr>
   </tbody>
 </table>
-<p>10 rows × 29 columns</p>
 </div></div></div>
 </div>
 </div>
@@ -2199,7 +2468,7 @@
 <p>100 rows × 12 columns</p>
 </div></div></div>
 </div>
-<p>We can simplify the ‘id_text’ column, because all documents derive from the same project (epsd2/admnin/u3adm).</p>
+<p>We can simplify the ‘id_text’ column, because all documents derive from the same project (epsd2/admin/u3adm).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">tid</span><span class="p">[</span><span class="o">-</span><span class="mi">7</span><span class="p">:]</span> <span class="k">for</span> <span class="n">tid</span> <span class="ow">in</span> <span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">]]</span>
@@ -2762,6 +3031,168 @@
 <p>The output file is called <code class="docutils literal notranslate"><span class="pre">part_1_output.csv</span></code> and is placed in the directory <code class="docutils literal notranslate"><span class="pre">output</span></code>. In most computers, <code class="docutils literal notranslate"><span class="pre">csv</span></code> files open automatically in Excel. This program does not deal well with <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> encoding (files in <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> need to be imported; see the instructions <a class="reference external" href="https://www.itg.ias.edu/content/how-import-csv-file-uses-utf-8-character-encoding-0">here</a>. If you intend to use the file in Excel, change <code class="docutils literal notranslate"><span class="pre">encoding</span> <span class="pre">='utf-8'</span></code> to <code class="docutils literal notranslate"><span class="pre">encoding='utf-16'</span></code>. For usage in computational text analysis applications <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> is usually preferred.</p>
 <p>The Pandas function <code class="docutils literal notranslate"><span class="pre">to_pickle()</span></code> writes a binary file that can be opened in a later phase of the project with the <code class="docutils literal notranslate"><span class="pre">read_pickle()</span></code> command and will reproduce exactly the same DataFrame with the same data structure. The resulting file can only be used by pandas.</p>
 <p>You can skip Part I by importing the Part I output as a pandas dataframe at the beginning of Part II. Similarly, in the next parts, after you save the output, you will be able to import that output later on instead of rerunning the sections before.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">catalogue_data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>date_of_origin</th>
+      <th>dates_referenced</th>
+      <th>collection</th>
+      <th>primary_publication</th>
+      <th>museum_no</th>
+      <th>provenience</th>
+      <th>metadata_source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>P100041</td>
+      <td>SSXX - 00 - 00</td>
+      <td>SSXX - 00 - 00</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 053</td>
+      <td>AO 20313</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>P100189</td>
+      <td>SH46 - 08 - 05</td>
+      <td>SH46 - 08 - 05</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 211</td>
+      <td>AO 20039</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>P100190</td>
+      <td>SH47 - 07 - 29</td>
+      <td>SH47 - 07 - 29</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 212</td>
+      <td>AO 20051</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>P100191</td>
+      <td>AS01 - 03 - 24</td>
+      <td>AS01 - 03 - 24</td>
+      <td>Louvre Museum, Paris, France</td>
+      <td>AAS 213</td>
+      <td>AO 20074</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>P100211</td>
+      <td>AS01 - 12 - 11</td>
+      <td>AS01 - 12 - 11</td>
+      <td>Museum of Fine Arts, Budapest, Hungary</td>
+      <td>ActSocHun Or 5-12, 156 2</td>
+      <td>MHBA 51.2400</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>15666</th>
+      <td>P456164</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>CDLI Seals 003454 (composite)</td>
+      <td>NaN</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+    <tr>
+      <th>15667</th>
+      <td>P459158</td>
+      <td>Ibbi-Suen.00.00.00</td>
+      <td>Ibbi-Suen.00.00.00</td>
+      <td>private: anonymous, unlocated</td>
+      <td>CDLI Seals 006338 (physical)</td>
+      <td>Anonymous 459158</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+    <tr>
+      <th>15668</th>
+      <td>P481391</td>
+      <td>SH46 - 02 - 24</td>
+      <td>SH46 - 02 - 24</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>unpublished unassigned ?</td>
+      <td>UC CSC 1950</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>15669</th>
+      <td>P481395</td>
+      <td>SS02 - 02 - 00</td>
+      <td>SS02 - 02 - 00</td>
+      <td>Department of Classics, University of Cincinna...</td>
+      <td>unpublished unassigned ?</td>
+      <td>UC CSC 1954</td>
+      <td>Puzriš-Dagān</td>
+      <td>BDTNS</td>
+    </tr>
+    <tr>
+      <th>15670</th>
+      <td>P517012</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>CDLI Seals 013964 (composite)</td>
+      <td>NaN</td>
+      <td>Puzriš-Dagan (mod. Drehem)</td>
+      <td>ORACC</td>
+    </tr>
+  </tbody>
+</table>
+<p>15671 rows × 8 columns</p>
+</div></div></div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_1_output.csv&#39;</span><span class="p">)</span>

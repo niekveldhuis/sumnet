@@ -56,8 +56,8 @@ labels['wool'] = ['wool', '~wool']
 # In[ ]:
 
 
-words_df = pd.read_csv('output/part_3_words_output.csv')
-#words_df = pd.read_pickle('output/part_3_words_output.p')
+words_df = pd.read_pickle('https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_3_words_output.p') # uncomment to read from online file
+#words_df = pd.read_pickle('output/part_3_output.p') #uncomment to read from local file
 
 
 # In[ ]:
@@ -293,6 +293,7 @@ known
 # In[ ]:
 
 
+#run to save the prepared data
 known.to_csv('output/part_4_known.csv')
 known.to_pickle('output/part_4_known.p')
 unknown.to_csv('output/part_4_unknown.csv')
@@ -304,9 +305,9 @@ unknown_0.to_pickle('output/part_4_unknown_0.p')
 # In[ ]:
 
 
-#known = pd.read_pickle('part_4_known.p')
-#unknown = pd.read_pickle('part_4_unknown.p')
-#unknown_0 = pd.read_pickle('part_4_unknown_0.p')
+#known = pd.read_pickle('https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_known.p')
+#unknown = pd.read_pickle('https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_unknown.p')
+#unknown_0 = pd.read_pickle('https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_unknown_0.p')
 
 model_weights = {}
 
@@ -553,7 +554,7 @@ X_train, X_test, y_train, y_test = train_test_split(known.loc[:, 'AN.bu.um':'šu
 
 # ### 2.3 Naive Bayes
 # 
-# Here we will train our model using a Naive Bayes Model to predict archives based on the features made in the previous subsection. Here, we make the assumption that the features are independent of eachother, from which the descriptor _naive_ comes from. So:
+# Here we will train our model using a Naive Bayes Model to predict archives based on the features made in the previous subsection. Here, we make the assumption that the features are independent of each other, from which the descriptor _naive_ comes from. So:
 # 
 # $$P(x_i|y; x_1, x_2, ..., x_{i-1}, x_{i+1}, ..., x_n) = P(x_i| y)$$
 # 
@@ -561,13 +562,13 @@ X_train, X_test, y_train, y_test = train_test_split(known.loc[:, 'AN.bu.um':'šu
 # 
 # $$P(x_1, x_2, ..., x_n | y) = \prod_{i=1}^{n} P(x_i | y)$$
 # 
-# Moreover we will be using a Bayesian probability:
+# Moreover, we will be using Bayes' Law, which in this case states:
 # 
 # $$P(y|x_1, x_2, ..., x_n) = \frac{P(y)P(x_1, x_2, ..., x_n | y)}{P(x_1, x_2, ..., x_n)}$$
 # 
 # eg. the probability of a particular tablet (defined by features $x_1, x_2, ..., x_n$) is in archive $y$, is equal to the probability of getting a tablet from archive $y$ times the probability you would get a particular set of features $x_1, x_2, ..., x_n$ divided by the probability of getting a particular set of features $x_1, x_2, ..., x_n$.
 # 
-# Thus we can simpify this to:
+# Applying our assumption of independence from before, we can simplify this to:
 # 
 # $$P(y|x_1, x_2, ..., x_n) = \frac{P(y)\prod_{i=1}^{n} P(x_i | y)}{P(x_1, x_2, ..., x_n)}$$
 # 
@@ -650,8 +651,6 @@ print("Accuracy:", svm_score)
 unknown["SVM Predicted Archive"] = svm_archive.predict(unknown.loc[:, 'AN.bu.um':'šuʾura'])
 unknown
 
-
-# ### 2.5 Random Forest
 
 # ## 3 Complex Modeling Methods
 
@@ -769,4 +768,420 @@ words_df['archive_class'] = words_df.apply(lambda row: archive_class[int(row['id
 words_df
 
 
-# ## 5 Save Results in CSV file & Pickle
+# ## 5 Sophisticated Naive Bayes
+
+# In[ ]:
+
+
+import warnings
+warnings.filterwarnings('ignore')
+
+
+# ### 5.1 Feature and Model Creation
+
+# There are some nouns that are so closely associated with a specific archive that their presence in a text virtually guarantees that the text belongs to that archive. We will use this fact to create a training set for our classification model.
+# 
+# The `labels` dictionary below contains the different archives along with their possible associated nouns.
+
+# In[ ]:
+
+
+labels = dict()
+labels['domesticated_animal'] = ['ox', 'cow', 'sheep', 'goat', 'lamb', '~sheep', 'equid']
+dom = '(' + '|'.join(labels['domesticated_animal']) + ')'
+#split domesticated into large and small - sheep, goat, lamb, ~sheep would be small domesticated animals
+labels['wild_animal'] = ['bear', 'gazelle', 'mountain', 'lion'] # account for 'mountain animal' and plural
+wild = '(' + '|'.join(labels['wild_animal']) + ')'
+labels['dead_animal'] = ['die'] # find 'die' before finding domesticated or wild
+dead = '(' + '|'.join(labels['dead_animal']) + ')'
+labels['leather_object'] = ['boots', 'sandals']
+leath = '(' + '|'.join(labels['leather_object']) + ')'
+labels['precious_object'] = ['copper', 'bronze', 'silver', 'gold']
+prec = '(' + '|'.join(labels['precious_object']) + ')'
+labels['wool'] = ['wool', '~wool', 'hair']
+wool = '(' + '|'.join(labels['wool']) + ')'
+complete = []
+for lemma_list in labels.values():
+  complete = complete + lemma_list
+tot = '(' + '|'.join(complete) + ')'
+# labels['queens_archive'] = []
+
+
+# In[ ]:
+
+
+dom_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + dom + '.*\]')]['id_text'])
+wild_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + wild + '.*\]')]['id_text'])
+dead_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + dead + '.*\]')]['id_text'])
+leath_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + leath + '.*\]')]['id_text'])
+prec_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + prec + '.*\]')]['id_text'])
+wool_tabs = set(words_df.loc[words_df['lemma'].str.match('.*\[.*' + wool + '.*\]')]['id_text'])
+
+
+# Each row of the `sparse` table below corresponds to one text, and the columns of the table correspond to the words that appear in the texts. Every cell contains the number of times a specific word appears in a certain text.
+
+# In[ ]:
+
+
+# remove lemmas that are a part of a seal as well as words that are being used to determine training classes
+filter = (~words_df['label'].str.contains('s')) | words_df['lemma'].str.match('.*\[.*' + tot + '.*\]')
+sparse = words_df[filter].groupby(by=['id_text', 'lemma']).count()
+sparse = sparse['id_word'].unstack('lemma')
+sparse = sparse.fillna(0)
+
+#cleaning
+del filter
+
+
+# In[ ]:
+
+
+text_length = sparse.sum(axis=1)
+
+
+# If a text contains a word that is one of the designated nouns in `labels`, it is added to the set to be used for our ML model. Texts that do not contain any of these words or that contain words corresponding to more than one archive are ignored.
+
+# In[ ]:
+
+
+class_array = []
+
+for id_text in sparse.index:
+  cat = None
+  number = 0
+  if id_text in dom_tabs:
+    number += 1
+    cat = 'dom'
+  if id_text in wild_tabs:
+    number += 1
+    cat = 'wild'
+  if id_text in dead_tabs:
+    number += 1
+    cat = 'dead'
+  if id_text in prec_tabs:
+    number += 1
+    cat = 'prec'
+  if id_text in wool_tabs:
+    number += 1
+    cat = 'wool'
+  if number == 1:
+    class_array.append(cat)
+  else:
+    class_array.append(None)
+
+class_series = pd.Series(class_array, sparse.index)
+
+
+# Next we remove the texts from `sparse` that we used in the previous cell.
+
+# In[ ]:
+
+
+used_cols = []
+
+for col in sparse.columns:
+  if re.match('.*\[.*' + tot + '.*\]', col):
+    used_cols.append(col)
+  #elif re.match('.*PN$', col) is None:
+  #  used_cols.append(col)
+
+sparse = sparse.drop(used_cols, axis=1)
+
+
+# Now the `sparse` table will be updated to contain percentages of the frequency that a word appears in the text rather than the raw number of occurrences. This will allow us to better compare frequencies across texts of different lengths.
+
+# In[ ]:
+
+
+for col in sparse.columns:
+  if col != 'text_length':
+    sparse[col] = sparse[col]/text_length*1000
+
+
+# We must convert percentages from the previous cell into integers for the ML model to work properly.
+
+# In[ ]:
+
+
+this sparse = sparse.round()
+sparse = sparse.astype(int)
+
+
+# To form X, we reduce the `sparse` table to only contain texts that were designated for use above in `class_series`. Y consists of the names of the different archives.
+
+# In[ ]:
+
+
+X = sparse.loc[class_series.dropna().index]
+X = X.drop(X.loc[X.sum(axis=1) == 0, :].index, axis=0)
+y = class_series[X.index]
+
+
+# Our data is split into a training set and a test set. The ML model first uses the training set to learn how to predict the archives for the texts. Afterwards, the test set is used to verify how well our ML model works.
+
+# In[ ]:
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, 
+                                                    random_state = 9)
+
+
+# In[ ]:
+
+
+pipe = Pipeline([
+                 ('feature_reduction', SelectPercentile(score_func = f_classif)), 
+                 ('weighted_multi_nb', MultinomialNB())
+                 ])
+
+
+# In[ ]:
+
+
+from sklearn.model_selection import GridSearchCV
+f = GridSearchCV(pipe, {
+    'feature_reduction__percentile' : [i*10 for i in range(1, 10)],
+    'weighted_multi_nb__alpha' : [i/10 for i in range(1, 10)]
+    }, verbose = 0, n_jobs = -1)
+
+
+# In[ ]:
+
+
+f.fit(X_train, y_train);
+
+
+# In[ ]:
+
+
+f.best_params_
+
+
+# Our best score when run on the training set is about 93.6% accuracy.
+
+# In[ ]:
+
+
+f.best_score_
+
+
+# Our best score when run on the test set is very similar to above at 93.2% accuracy, which is good because it suggests that our model isn't overfitted to only work on the training set.
+
+# In[ ]:
+
+
+f.score(X_test, y_test)
+
+
+# In[ ]:
+
+
+predicted = f.predict(sparse)
+
+
+# The `predicted_df` table is the same as the `sparse` table from above, except that we have added an extra column at the end named `prediction`. `prediction` contains our ML model's classification of which archive the text belongs to based on the frequency of the words that appear.
+
+# In[ ]:
+
+
+predicted_df = sparse.copy()
+predicted_df['prediction'] = predicted
+
+
+# In[ ]:
+
+
+predicted_df
+
+
+# In[ ]:
+
+
+predicted_df.index
+
+
+# ### 5.4 Testing the Model on Hand-Classified Data
+# 
+# Here we first use our same ML model from before on Niek's hand-classified texts from the wool archive. Testing our ML model on these tablets gives us 82.5% accuracy.
+
+# In[ ]:
+
+
+wool_hand_tabs = set(pd.read_csv('drive/MyDrive/SumerianNetworks/JupyterBook/Outputs/wool_pid.txt',header=None)[0])
+
+
+# In[ ]:
+
+
+hand_wool_frame = sparse.loc[wool_hand_tabs].loc[class_series.isna() == True]
+
+f.score(X = hand_wool_frame, 
+        y = pd.Series(
+            index = hand_wool_frame.index, 
+            data = ['wool' for i in range(0, hand_wool_frame.shape[0])] ))
+
+
+# Testing our ML model on 100 random hand-classified tablets selected from among all the texts gives us 87.2% accuracy.
+
+# In[ ]:
+
+
+niek_100_random_tabs = pd.read_pickle('/content/drive/MyDrive/niek_cats').dropna()
+niek_100_random_tabs = niek_100_random_tabs.set_index('pnum')['category_text']
+
+
+# In[ ]:
+
+
+random_frame = sparse.loc[set(niek_100_random_tabs.index)]
+random_frame['result'] = niek_100_random_tabs[random_frame.index]
+
+
+# In[ ]:
+
+
+f.score(X=random_frame.drop(labels='result', axis=1), y = random_frame['result'])
+
+
+# A large majority of the tablets are part of the domestic archive and have been classified as such.
+
+# In[ ]:
+
+
+random_frame['result'].array
+
+
+# In[ ]:
+
+
+f.predict(random_frame.drop(labels='result', axis=1))
+
+
+# ### 5.2 Frequency Graphs
+# 
+# When run on all of the tablets, our ML model classifies a large portion of the texts into the domestic archive, since that is the most common one.
+
+# In[ ]:
+
+
+from matplotlib import pyplot as plt
+
+
+# In[ ]:
+
+
+plt.xlabel('Archive Class')
+plt.ylabel('Frequency', rotation=0, labelpad=30)
+plt.title('Frequencies of Predicted Archive Classes in All Tablets')
+plt.xticks(rotation=45)
+labels = list(set(predicted_df['prediction']))
+counts = [predicted_df.loc[predicted_df['prediction'] == label].shape[0] for label in labels]
+plt.bar(labels, counts);
+
+
+# The below chart displays the actual frequencies of the different archives in the test set. As mentioned previously, it is visually obvious that there are many texts in the domestic archive, with comparatively very few texts in all of the other archives.
+
+# In[ ]:
+
+
+plt.xlabel('Archive Class')
+plt.ylabel('Frequency', rotation=0, labelpad=30)
+plt.title('Frequencies of Test Archive Classes')
+plt.xticks(rotation=45)
+test_counts = [(class_series[X_test.index])[class_series == label].count() for label in labels]
+plt.bar(labels, np.asarray(test_counts));
+
+
+# Below is a chart of the predicted frequency of the different archives by our ML model in the test set. Our predicted frequency looks very similar to the actual frequency above, which is good.
+
+# In[ ]:
+
+
+plt.xlabel('Archive Class')
+plt.ylabel('Frequency', rotation=0, labelpad=30)
+plt.title('Frequencies of Predicted Test Archive Classes')
+plt.xticks(rotation=45)
+test_pred_counts = [predicted_df.loc[X_test.index].loc[predicted_df['prediction'] == label].shape[0] for label in labels]
+plt.bar(labels, np.asarray(test_pred_counts));
+
+
+# Unfortunately, since our texts skew so heavily towards being part of the domestic archive, most of the other archives end up being overpredicted (i.e. our model says a text is part of that archive when it is actually not). Below we can see that the domestic archive is the only archive whose texts are not overpredicted.
+
+# In[ ]:
+
+
+plt.xlabel('Archive Class')
+plt.ylabel('Rate', rotation=0, labelpad=30)
+plt.title('Rate of Overprediction by Archive')
+plt.xticks(rotation=45)
+rate = np.asarray(test_pred_counts)/np.asarray(test_counts)*sum(test_counts)/sum(test_pred_counts)
+plt.bar(labels, rate);
+
+
+# ### 5.3 Accuracy By Archive
+# 
+# The accuracies for the dead and wild archives are relatively low. This is likely because those texts are being misclassified into the domestic archive, our largest archive, since all three of these archives deal with animals. The wool and precious archives have decent accuracies.
+
+# In[ ]:
+
+
+f.score(X_test[class_series == 'dead'], y_test[class_series == 'dead'])
+
+
+# In[ ]:
+
+
+f.score(X_test[class_series == 'dom'], y_test[class_series == 'dom'])
+
+
+# In[ ]:
+
+
+f.score(X_test[class_series == 'wild'], y_test[class_series == 'wild'])
+
+
+# In[ ]:
+
+
+f.score(X_test[class_series == 'wool'], y_test[class_series == 'wool'])
+
+
+# In[ ]:
+
+
+f.score(X_test[class_series == 'prec'], y_test[class_series == 'prec'])
+
+
+# We can also look at the confusion matrix. A confusion matrix is used to evaluate the accuracy of a classification. The rows denote the actual archive, while the columns denote the predicted archive. 
+# 
+# Looking at the first column: 
+# - 73.44% of the dead archive texts are predicted correctly
+# - 1.31% of the domestic archive texts are predicted to be part of the dead archive
+# - 1.47% of the wild archive texts are predicted to be part of the dead archive
+# - 1.43% of the wool archive texts are predicted to be part of the dead archive
+# - none of the precious archive texts are predicted to be part of the dead archive
+
+# In[ ]:
+
+
+from sklearn.metrics import confusion_matrix
+archive_confusion = confusion_matrix(y_test, f.predict(X_test), normalize='true')
+
+
+# In[ ]:
+
+
+archive_confusion
+
+
+# This is the same confusion matrix converted into real numbers of texts. Since the number of domestic archive texts is so high, even a small bit of misclassification of the domestic archive texts can overwhelm the other archives.
+# 
+# For example, even though only 1.3% of the domestic archive texts are predicted to be part of the dead archive, that corresponds to 43 texts, while the 73% of the dead archive texts that were predicted correctly correspond to just 47 texts. As a result, about half of the texts that were predicted to be part of the dead archive are incorrectly classified.
+
+# In[ ]:
+
+
+confusion_matrix(y_test, f.predict(X_test), normalize=None)
+
+
+# ## 6 Save Results in CSV file & Pickle

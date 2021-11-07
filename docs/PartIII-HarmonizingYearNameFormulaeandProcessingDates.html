@@ -92,7 +92,7 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="PartI-ExtractLemmatizationfromJSON.html">
-   I. Extract Lemmatization from JSON
+   I. Importing the Data and Extracting Lemmatization from JSON
   </a>
  </li>
  <li class="toctree-l1">
@@ -117,7 +117,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="PartVI-GeographicNames.html">
-   VI. Geographic Names
+   VI. Geography
   </a>
  </li>
  <li class="toctree-l1">
@@ -262,12 +262,11 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;output/part_2_output.csv&#39;</span><span class="p">)</span>
-<span class="c1">#words_df = pd.read_pickle(&#39;output/part_2_output.p&#39;)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s1">&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_2_output.p&#39;</span><span class="p">)</span> <span class="c1"># uncomment to read from online file</span>
+<span class="c1">#words_df = pd.read_pickle(&#39;output/part_2_output.p&#39;) #uncomment to read from local file</span>
 
-<span class="n">catalogue_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;output/part_1_catalogue.csv&#39;</span><span class="p">)</span>
+<span class="n">catalogue_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s1">&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_1_catalogue.p&#39;</span><span class="p">)</span>
 <span class="c1">#catalogue_data = pd.read_pickle(&#39;output/part_1_catalogue.p&#39;)</span>
-<span class="n">catalogue_data</span>
 </pre></div>
 </div>
 </div>
@@ -290,7 +289,6 @@
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Unnamed: 0</th>
       <th>date_of_origin</th>
       <th>dates_referenced</th>
       <th>collection</th>
@@ -302,8 +300,7 @@
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>P100041</td>
+      <th>P100041</th>
       <td>SSXX - 00 - 00</td>
       <td>SSXX - 00 - 00</td>
       <td>Louvre Museum, Paris, France</td>
@@ -313,8 +310,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>P100189</td>
+      <th>P100189</th>
       <td>SH46 - 08 - 05</td>
       <td>SH46 - 08 - 05</td>
       <td>Louvre Museum, Paris, France</td>
@@ -324,8 +320,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>P100190</td>
+      <th>P100190</th>
       <td>SH47 - 07 - 29</td>
       <td>SH47 - 07 - 29</td>
       <td>Louvre Museum, Paris, France</td>
@@ -335,8 +330,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>P100191</td>
+      <th>P100191</th>
       <td>AS01 - 03 - 24</td>
       <td>AS01 - 03 - 24</td>
       <td>Louvre Museum, Paris, France</td>
@@ -346,8 +340,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>P100211</td>
+      <th>P100211</th>
       <td>AS01 - 12 - 11</td>
       <td>AS01 - 12 - 11</td>
       <td>Museum of Fine Arts, Budapest, Hungary</td>
@@ -365,11 +358,9 @@
       <td>...</td>
       <td>...</td>
       <td>...</td>
-      <td>...</td>
     </tr>
     <tr>
-      <th>15666</th>
-      <td>P456164</td>
+      <th>P456164</th>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -379,8 +370,7 @@
       <td>ORACC</td>
     </tr>
     <tr>
-      <th>15667</th>
-      <td>P459158</td>
+      <th>P459158</th>
       <td>Ibbi-Suen.00.00.00</td>
       <td>Ibbi-Suen.00.00.00</td>
       <td>private: anonymous, unlocated</td>
@@ -390,8 +380,7 @@
       <td>ORACC</td>
     </tr>
     <tr>
-      <th>15668</th>
-      <td>P481391</td>
+      <th>P481391</th>
       <td>SH46 - 02 - 24</td>
       <td>SH46 - 02 - 24</td>
       <td>Department of Classics, University of Cincinna...</td>
@@ -401,8 +390,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>15669</th>
-      <td>P481395</td>
+      <th>P481395</th>
       <td>SS02 - 02 - 00</td>
       <td>SS02 - 02 - 00</td>
       <td>Department of Classics, University of Cincinna...</td>
@@ -412,8 +400,7 @@
       <td>BDTNS</td>
     </tr>
     <tr>
-      <th>15670</th>
-      <td>P517012</td>
+      <th>P517012</th>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -424,32 +411,32 @@
     </tr>
   </tbody>
 </table>
-<p>15671 rows × 8 columns</p>
+<p>15671 rows × 7 columns</p>
 </div></div></div>
 </div>
 <div class="section" id="normalizing-bdtns-dates">
 <h2>1 Normalizing BDTNS Dates<a class="headerlink" href="#normalizing-bdtns-dates" title="Permalink to this headline">¶</a></h2>
-<p>In the ORACC metadata the field <code class="docutils literal notranslate"><span class="pre">date_of_origin</span></code> is formatted as <code class="docutils literal notranslate"><span class="pre">Amar-Suen.05.10.03</span></code>, meaning “5th regnal year of Amar-Suen; month 10, day 3”. The ORACC metadata are directly imported from CDLI. In general, BDTNS metadata tend to be more reliable than CDLI metadata. As such, wherever possible we have used the BDTNS date rather than the CDLI date.</p>
+<p>In the ORACC metadata the field <code class="docutils literal notranslate"><span class="pre">date_of_origin</span></code> is formatted as <code class="docutils literal notranslate"><span class="pre">Amar-Suen.05.10.03</span></code>, meaning “5th regnal year of Amar-Suen; month 10, day 3”. The ORACC metadata are directly imported from CDLI. In general, BDTNS metadata tend to be more reliable than CDLI metadata. As such, wherever possible we will use the BDTNS date rather than the CDLI date.</p>
 <p>However, the strings for the dates are formatted differently in BDTNS. If the date were the same as the example given above, in the BDTNS format it would be represented by the string <code class="docutils literal notranslate"><span class="pre">AS05</span> <span class="pre">-</span> <span class="pre">10</span> <span class="pre">-</span> <span class="pre">03</span></code>. Moreover, BDTNS dates can sometimes contain additional information, like if the month was a diri month, or multiple dates on the same tablet. When present, this information could be of value later on, so we attempt to include as much of it as possible. In the following we will write two functions, the first to convert from BDTNS format to several numerical and boolean fields and the second to do the same for the CDLI format.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inner_normalize_bdtns_date</span><span class="p">(</span><span class="n">bdtns_date</span><span class="p">):</span>
-    <span class="c1"># the normalized time each king&#39;s reign began, with Ur-Namma&#39;s first year</span>
-    <span class="c1"># of rule as year 0.</span>
-    <span class="n">reigns</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;UN&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
-        <span class="s1">&#39;SH&#39;</span> <span class="p">:</span> <span class="mi">18</span><span class="p">,</span> 
-        <span class="s1">&#39;AS&#39;</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span> 
-        <span class="s1">&#39;SS&#39;</span> <span class="p">:</span> <span class="mi">75</span><span class="p">,</span> 
-        <span class="s1">&#39;IS&#39;</span> <span class="p">:</span> <span class="mi">84</span>
-    <span class="p">}</span>
+      <span class="c1"># the normalized time each king&#39;s reign began, with Ur-Namma&#39;s first year</span>
+      <span class="c1"># of rule as year 0.</span>
+      <span class="n">reigns</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;UN&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+                <span class="s1">&#39;SH&#39;</span> <span class="p">:</span> <span class="mi">18</span><span class="p">,</span> 
+                <span class="s1">&#39;AS&#39;</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span> 
+                <span class="s1">&#39;SS&#39;</span> <span class="p">:</span> <span class="mi">75</span><span class="p">,</span> 
+                <span class="s1">&#39;IS&#39;</span> <span class="p">:</span> <span class="mi">84</span>
+                <span class="p">}</span>
     
-    <span class="c1"># Sometimes a date string contains multiple dates seperated by &#39;//&#39;.</span>
-    <span class="c1"># In such a case we set the range of dates to go from the earliest</span>
-    <span class="c1"># date to the latest date.</span>
-    <span class="k">if</span> <span class="s1">&#39;//&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">:</span>
-        <span class="n">dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalize_bdtns_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">{</span>
+      <span class="c1"># Sometimes a date string contains multiple dates seperated by &#39;//&#39;.</span>
+      <span class="c1"># In such a case we set the range of dates to go from the earliest</span>
+      <span class="c1"># date to the latest date.</span>
+      <span class="k">if</span> <span class="s1">&#39;//&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">:</span>
+          <span class="n">dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalize_bdtns_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)]</span>
+          <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;min_year&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">([</span><span class="n">date</span><span class="p">[</span><span class="s1">&#39;min_year&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]),</span>
             <span class="s1">&#39;max_year&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">([</span><span class="n">date</span><span class="p">[</span><span class="s1">&#39;max_year&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]),</span>
             <span class="s1">&#39;min_month&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">([</span><span class="n">date</span><span class="p">[</span><span class="s1">&#39;min_month&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]),</span>
@@ -460,46 +447,46 @@
             <span class="s1">&#39;questionable&#39;</span><span class="p">:</span> <span class="nb">any</span><span class="p">([</span><span class="n">date</span><span class="p">[</span><span class="s1">&#39;questionable&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]),</span>
             <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="nb">any</span><span class="p">([</span><span class="n">date</span><span class="p">[</span><span class="s1">&#39;other_meta_chars&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]),</span>
             <span class="s1">&#39;multiple_dates&#39;</span><span class="p">:</span> <span class="kc">True</span>
-        <span class="p">}</span>
+          <span class="p">}</span>
 
-    <span class="c1"># there are several characters used as markers for metatextual information</span>
-    <span class="c1"># we remove them from our string and handle them seperately.</span>
-    <span class="n">chars</span> <span class="o">=</span> <span class="s1">&#39; d?]m+()l&#39;</span>
-    <span class="n">reduced_string</span> <span class="o">=</span> <span class="n">bdtns_date</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chars</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+      <span class="c1"># there are several characters used as markers for metatextual information</span>
+      <span class="c1"># we remove them from our string and handle them seperately.</span>
+      <span class="n">chars</span> <span class="o">=</span> <span class="s1">&#39; d?]m+()l&#39;</span>
+      <span class="n">reduced_string</span> <span class="o">=</span> <span class="n">bdtns_date</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+      <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chars</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
         <span class="n">reduced_string</span> <span class="o">=</span> <span class="n">reduced_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">date_list</span> <span class="o">=</span> <span class="n">reduced_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
-    <span class="n">date_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nan&#39;</span> <span class="k">if</span> <span class="s1">&#39;XX&#39;</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">date_list</span><span class="p">]</span>
-    <span class="k">try</span><span class="p">:</span>
+      <span class="n">date_list</span> <span class="o">=</span> <span class="n">reduced_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+      <span class="n">date_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nan&#39;</span> <span class="k">if</span> <span class="s1">&#39;XX&#39;</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">date_list</span><span class="p">]</span>
+      <span class="k">try</span><span class="p">:</span>
         <span class="n">year</span> <span class="o">=</span> <span class="n">reigns</span><span class="p">[</span><span class="n">date_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]]</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">date_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+      <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">year</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
-    <span class="n">month</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">date_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">try</span><span class="p">:</span>
+      <span class="n">month</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">date_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+      <span class="k">try</span><span class="p">:</span>
         <span class="n">day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">date_list</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+      <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="n">day</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;min_year&#39;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
-            <span class="s1">&#39;max_year&#39;</span><span class="p">:</span> <span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">&#39;min_month&#39;</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span>
-            <span class="s1">&#39;max_month&#39;</span><span class="p">:</span> <span class="n">month</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">&#39;diri_month&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">,</span>
-            <span class="s1">&#39;min_day&#39;</span><span class="p">:</span> <span class="n">day</span><span class="p">,</span>
-            <span class="s1">&#39;max_day&#39;</span><span class="p">:</span> <span class="n">day</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">&#39;questionable&#39;</span><span class="p">:</span> <span class="s1">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">,</span>
-            <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="nb">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">bdtns_date</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">[</span><span class="mi">3</span><span class="p">:]]),</span>
-            <span class="s1">&#39;multiple_dates&#39;</span><span class="p">:</span> <span class="kc">False</span>
+      <span class="k">return</span> <span class="p">{</span>
+              <span class="s1">&#39;min_year&#39;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
+              <span class="s1">&#39;max_year&#39;</span><span class="p">:</span> <span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="s1">&#39;min_month&#39;</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span>
+              <span class="s1">&#39;max_month&#39;</span><span class="p">:</span> <span class="n">month</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="s1">&#39;diri_month&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">,</span>
+              <span class="s1">&#39;min_day&#39;</span><span class="p">:</span> <span class="n">day</span><span class="p">,</span>
+              <span class="s1">&#39;max_day&#39;</span><span class="p">:</span> <span class="n">day</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="s1">&#39;questionable&#39;</span><span class="p">:</span> <span class="s1">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">bdtns_date</span><span class="p">,</span>
+              <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="nb">any</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">bdtns_date</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">[</span><span class="mi">3</span><span class="p">:]]),</span>
+              <span class="s1">&#39;multiple_dates&#39;</span><span class="p">:</span> <span class="kc">False</span>
             <span class="p">}</span>
 
 <span class="c1"># Lastly, we define a wrapper function to catch any errors thrown by our main function.</span>
 <span class="c1"># This is useful because the string was manually entered, so there are many edge cases,</span>
 <span class="c1"># each with only a few instances.</span>
 <span class="k">def</span> <span class="nf">normalize_bdtns_date</span><span class="p">(</span><span class="n">bdtns_date</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">inner_normalize_bdtns_date</span><span class="p">(</span><span class="n">bdtns_date</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">inner_normalize_bdtns_date</span><span class="p">(</span><span class="n">bdtns_date</span><span class="p">)</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span>
                   <span class="s1">&#39;min_year&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;max_year&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;min_month&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -510,7 +497,7 @@
                   <span class="s1">&#39;questionable&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;multiple_dates&#39;</span> <span class="p">:</span> <span class="kc">None</span>
-                <span class="p">}</span>
+    <span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -553,18 +540,17 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_cdli_date</span><span class="p">(</span><span class="n">cdli_date</span><span class="p">):</span>
-    <span class="c1"># the normalized time each king&#39;s reign began, with Ur-Namma&#39;s first year</span>
-    <span class="c1"># of rule as year 0.</span>
-    <span class="n">reigns</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;Ur-Namma&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+      <span class="c1"># the normalized time each king&#39;s reign began, with Ur-Namma&#39;s first year</span>
+      <span class="c1"># of rule as year 0.</span>
+      <span class="n">reigns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ur-Namma&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
                 <span class="s1">&#39;Šulgi&#39;</span> <span class="p">:</span> <span class="mi">18</span><span class="p">,</span> 
                 <span class="s1">&#39;Amar-Suen&#39;</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span> 
                 <span class="s1">&#39;Šū-Suen&#39;</span> <span class="p">:</span> <span class="mi">75</span><span class="p">,</span> 
                 <span class="s1">&#39;Ibbi-Suen&#39;</span> <span class="p">:</span> <span class="mi">84</span> 
                 <span class="p">}</span>
 
-    <span class="c1"># break if NaN or None (this means the date is illegible)</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cdli_date</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span> 
+      <span class="c1"># break if NaN or None (this means the date is illegible)</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cdli_date</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span> 
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
                   <span class="s1">&#39;min_year&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;max_year&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -576,18 +562,18 @@
                   <span class="s1">&#39;questionable&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;multiple_dates&#39;</span> <span class="p">:</span> <span class="kc">None</span>
-            <span class="p">}</span>
+        <span class="p">}</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="n">decomposed_date</span> <span class="o">=</span> <span class="n">cdli_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reigns</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">decomposed_date</span> <span class="o">=</span> <span class="n">cdli_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+      <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reigns</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      <span class="k">if</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
 
-    <span class="c1"># if a section of the year/month/day is illegible we replace that entry with NaN,</span>
-    <span class="c1"># otherwise we convert it to a float.</span>
-    <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
-    <span class="k">try</span><span class="p">:</span>
+      <span class="c1"># if a section of the year/month/day is illegible we replace that entry with NaN,</span>
+      <span class="c1"># otherwise we convert it to a float.</span>
+      <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+      <span class="k">try</span><span class="p">:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
                   <span class="s1">&#39;min_year&#39;</span> <span class="p">:</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                   <span class="s1">&#39;max_year&#39;</span> <span class="p">:</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">decomposed_date</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
@@ -599,10 +585,10 @@
                   <span class="s1">&#39;questionable&#39;</span> <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;multiple_dates&#39;</span> <span class="p">:</span> <span class="kc">False</span>
-            <span class="p">}</span>
+        <span class="p">}</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">except</span><span class="p">:</span> <span class="c1"># due to some edge cases in the formatting, the list can occasionally</span>
+      <span class="k">except</span><span class="p">:</span> <span class="c1"># due to some edge cases in the formatting, the list can occasionally</span>
               <span class="c1"># have length shorter than 4. If so, the date is partially illegible</span>
               <span class="c1"># and can be ignored.</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
@@ -616,7 +602,7 @@
                   <span class="s1">&#39;questionable&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;other_meta_chars&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;multiple_dates&#39;</span> <span class="p">:</span> <span class="kc">None</span>
-            <span class="p">}</span>
+        <span class="p">}</span>
         <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 </div>
@@ -635,20 +621,20 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_normalized_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="n">row_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># go through each row of the DataFrame</span>
-    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-        <span class="c1"># get the date_of_origin string</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
-        <span class="c1"># select the appropriate function to convert using metadata_source</span>
-        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BDTNS&#39;</span><span class="p">:</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">normalize_bdtns_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">normalize_cdli_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
-        <span class="c1"># add the result to a list</span>
-        <span class="n">row_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">row_list</span>
+  <span class="n">row_list</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="c1"># go through each row of the DataFrame</span>
+  <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="c1"># get the date_of_origin string</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date_of_origin&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+    <span class="c1"># select the appropriate function to convert using metadata_source</span>
+    <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BDTNS&#39;</span><span class="p">:</span>
+      <span class="n">row</span> <span class="o">=</span> <span class="n">normalize_bdtns_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">row</span> <span class="o">=</span> <span class="n">normalize_cdli_date</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">row</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;metadata_source&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+    <span class="c1"># add the result to a list</span>
+    <span class="n">row_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">row_list</span>
 </pre></div>
 </div>
 </div>
@@ -656,49 +642,9 @@
 <p>Next, we process the dates given in <code class="docutils literal notranslate"><span class="pre">catalogue_data</span></code>. From this we will both add the information to our <code class="docutils literal notranslate"><span class="pre">words_df</span></code> variable, as well as include it in a standalone variable, <code class="docutils literal notranslate"><span class="pre">time_data</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">add_normalized_columns</span><span class="p">(</span><span class="n">catalogue_data</span><span class="p">)</span>
-<span class="n">time_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">words_df</span> <span class="o">=</span> <span class="n">words_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">time_data</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;id_text&#39;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">22</span><span class="o">-</span><span class="mi">59724485</span><span class="n">cd3f</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">result</span> <span class="o">=</span> <span class="n">add_normalized_columns</span><span class="p">(</span><span class="n">catalogue_data</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">time_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">words_df</span> <span class="o">=</span> <span class="n">words_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">time_data</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;id_text&#39;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\pandas\core\frame.py</span> in <span class="ni">merge</span><span class="nt">(self, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)</span>
-<span class="g g-Whitespace">   </span><span class="mi">7954</span>             <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">7955</span>             <span class="n">indicator</span><span class="o">=</span><span class="n">indicator</span><span class="p">,</span>
-<span class="ne">-&gt; </span><span class="mi">7956</span>             <span class="n">validate</span><span class="o">=</span><span class="n">validate</span><span class="p">,</span>
-<span class="g g-Whitespace">   </span><span class="mi">7957</span>         <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">7958</span> 
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\pandas\core\reshape\merge.py</span> in <span class="ni">merge</span><span class="nt">(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)</span>
-<span class="g g-Whitespace">     </span><span class="mi">85</span>         <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">86</span>         <span class="n">indicator</span><span class="o">=</span><span class="n">indicator</span><span class="p">,</span>
-<span class="ne">---&gt; </span><span class="mi">87</span>         <span class="n">validate</span><span class="o">=</span><span class="n">validate</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">88</span>     <span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span>     <span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\pandas\core\reshape\merge.py</span> in <span class="ni">__init__</span><span class="nt">(self, left, right, how, on, left_on, right_on, axis, left_index, right_index, sort, suffixes, copy, indicator, validate)</span>
-<span class="g g-Whitespace">    </span><span class="mi">654</span>         <span class="c1"># validate the merge keys dtypes. We may need to coerce</span>
-<span class="g g-Whitespace">    </span><span class="mi">655</span>         <span class="c1"># to avoid incompatible dtypes</span>
-<span class="ne">--&gt; </span><span class="mi">656</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_coerce_merge_keys</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">657</span> 
-<span class="g g-Whitespace">    </span><span class="mi">658</span>         <span class="c1"># If argument passed to validate,</span>
-
-<span class="nn">c:\programdata\miniconda3\lib\site-packages\pandas\core\reshape\merge.py</span> in <span class="ni">_maybe_coerce_merge_keys</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1163</span>                     <span class="n">inferred_right</span> <span class="ow">in</span> <span class="n">string_types</span> <span class="ow">and</span> <span class="n">inferred_left</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">string_types</span>
-<span class="g g-Whitespace">   </span><span class="mi">1164</span>                 <span class="p">):</span>
-<span class="ne">-&gt; </span><span class="mi">1165</span>                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1166</span> 
-<span class="g g-Whitespace">   </span><span class="mi">1167</span>             <span class="c1"># datetimelikes must match exactly</span>
-
-<span class="ne">ValueError</span>: You are trying to merge on object and int64 columns. If you wish to proceed you should use pd.concat
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span> <span class="n">result</span> <span class="o">=</span> <span class="n">add_normalized_columns</span><span class="p">(</span><span class="n">catalogue_data</span><span class="p">)</span>
+ <span class="n">time_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">catalogue_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+ <span class="n">words_df</span> <span class="o">=</span> <span class="n">words_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">time_data</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;id_text&#39;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

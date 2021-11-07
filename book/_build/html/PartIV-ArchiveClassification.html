@@ -94,7 +94,7 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="PartI-ExtractLemmatizationfromJSON.html">
-   I. Extract Lemmatization from JSON
+   I. Importing the Data and Extracting Lemmatization from JSON
   </a>
  </li>
  <li class="toctree-l1">
@@ -119,7 +119,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="PartVI-GeographicNames.html">
-   VI. Geographic Names
+   VI. Geography
   </a>
  </li>
  <li class="toctree-l1">
@@ -286,11 +286,6 @@
      2.4 SVM
     </a>
    </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#random-forest">
-     2.5 Random Forest
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -304,8 +299,35 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sophisticated-naive-bayes">
+   5 Sophisticated Naive Bayes
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#feature-and-model-creation">
+     5.1 Feature and Model Creation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#testing-the-model-on-hand-classified-data">
+     5.4 Testing the Model on Hand-Classified Data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#frequency-graphs">
+     5.2 Frequency Graphs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#accuracy-by-archive">
+     5.3 Accuracy By Archive
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#save-results-in-csv-file-pickle">
-   5 Save Results in CSV file &amp; Pickle
+   6 Save Results in CSV file &amp; Pickle
   </a>
  </li>
 </ul>
@@ -371,8 +393,8 @@
 <p>Separate components of the lemma.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;output/part_3_words_output.csv&#39;</span><span class="p">)</span>
-<span class="c1">#words_df = pd.read_pickle(&#39;output/part_3_words_output.p&#39;)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s1">&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_3_words_output.p&#39;</span><span class="p">)</span> <span class="c1"># uncomment to read from online file</span>
+<span class="c1">#words_df = pd.read_pickle(&#39;output/part_3_output.p&#39;) #uncomment to read from local file</span>
 </pre></div>
 </div>
 </div>
@@ -7346,7 +7368,8 @@ Name: label, Length: 2032, dtype: int64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">known</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_4_known.csv&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#run to save the prepared data</span>
+<span class="n">known</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_4_known.csv&#39;</span><span class="p">)</span>
 <span class="n">known</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;output/part_4_known.p&#39;</span><span class="p">)</span>
 <span class="n">unknown</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;output/part_4_unknown.csv&#39;</span><span class="p">)</span>
 <span class="n">unknown</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="s1">&#39;output/part_4_unknown.p&#39;</span><span class="p">)</span>
@@ -7358,9 +7381,9 @@ Name: label, Length: 2032, dtype: int64
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#known = pd.read_pickle(&#39;part_4_known.p&#39;)</span>
-<span class="c1">#unknown = pd.read_pickle(&#39;part_4_unknown.p&#39;)</span>
-<span class="c1">#unknown_0 = pd.read_pickle(&#39;part_4_unknown_0.p&#39;)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#known = pd.read_pickle(&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_known.p&#39;)</span>
+<span class="c1">#unknown = pd.read_pickle(&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_unknown.p&#39;)</span>
+<span class="c1">#unknown_0 = pd.read_pickle(&#39;https://gitlab.com/yashila.bordag/sumnet-data/-/raw/main/part_4_unknown_0.p&#39;)</span>
 
 <span class="n">model_weights</span> <span class="o">=</span> <span class="p">{}</span>
 </pre></div>
@@ -9672,17 +9695,17 @@ Name: label, Length: 2032, dtype: int64
 </div>
 <div class="section" id="naive-bayes">
 <h3>2.3 Naive Bayes<a class="headerlink" href="#naive-bayes" title="Permalink to this headline">¶</a></h3>
-<p>Here we will train our model using a Naive Bayes Model to predict archives based on the features made in the previous subsection. Here, we make the assumption that the features are independent of eachother, from which the descriptor <em>naive</em> comes from. So:</p>
+<p>Here we will train our model using a Naive Bayes Model to predict archives based on the features made in the previous subsection. Here, we make the assumption that the features are independent of each other, from which the descriptor <em>naive</em> comes from. So:</p>
 <div class="math notranslate nohighlight">
 \[P(x_i|y; x_1, x_2, ..., x_{i-1}, x_{i+1}, ..., x_n) = P(x_i| y)\]</div>
 <p>and:</p>
 <div class="math notranslate nohighlight">
 \[P(x_1, x_2, ..., x_n | y) = \prod_{i=1}^{n} P(x_i | y)\]</div>
-<p>Moreover we will be using a Bayesian probability:</p>
+<p>Moreover, we will be using Bayes’ Law, which in this case states:</p>
 <div class="math notranslate nohighlight">
 \[P(y|x_1, x_2, ..., x_n) = \frac{P(y)P(x_1, x_2, ..., x_n | y)}{P(x_1, x_2, ..., x_n)}\]</div>
 <p>eg. the probability of a particular tablet (defined by features <span class="math notranslate nohighlight">\(x_1, x_2, ..., x_n\)</span>) is in archive <span class="math notranslate nohighlight">\(y\)</span>, is equal to the probability of getting a tablet from archive <span class="math notranslate nohighlight">\(y\)</span> times the probability you would get a particular set of features <span class="math notranslate nohighlight">\(x_1, x_2, ..., x_n\)</span> divided by the probability of getting a particular set of features <span class="math notranslate nohighlight">\(x_1, x_2, ..., x_n\)</span>.</p>
-<p>Thus we can simpify this to:</p>
+<p>Applying our assumption of independence from before, we can simplify this to:</p>
 <div class="math notranslate nohighlight">
 \[P(y|x_1, x_2, ..., x_n) = \frac{P(y)\prod_{i=1}^{n} P(x_i | y)}{P(x_1, x_2, ..., x_n)}\]</div>
 <p>Which means the probability of a particular tablet (defined by features <span class="math notranslate nohighlight">\(x_1, x_2, ..., x_n\)</span>) is in archive <span class="math notranslate nohighlight">\(y\)</span> is <em>proportional</em> to</p>
@@ -9760,9 +9783,6 @@ Name: label, Length: 2032, dtype: int64
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="random-forest">
-<h3>2.5 Random Forest<a class="headerlink" href="#random-forest" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="complex-modeling-methods">
@@ -9894,8 +9914,1683 @@ Name: label, Length: 2032, dtype: int64
 </div>
 </div>
 </div>
+<div class="section" id="sophisticated-naive-bayes">
+<h2>5 Sophisticated Naive Bayes<a class="headerlink" href="#sophisticated-naive-bayes" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="feature-and-model-creation">
+<h3>5.1 Feature and Model Creation<a class="headerlink" href="#feature-and-model-creation" title="Permalink to this headline">¶</a></h3>
+<p>There are some nouns that are so closely associated with a specific archive that their presence in a text virtually guarantees that the text belongs to that archive. We will use this fact to create a training set for our classification model.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">labels</span></code> dictionary below contains the different archives along with their possible associated nouns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;domesticated_animal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ox&#39;</span><span class="p">,</span> <span class="s1">&#39;cow&#39;</span><span class="p">,</span> <span class="s1">&#39;sheep&#39;</span><span class="p">,</span> <span class="s1">&#39;goat&#39;</span><span class="p">,</span> <span class="s1">&#39;lamb&#39;</span><span class="p">,</span> <span class="s1">&#39;~sheep&#39;</span><span class="p">,</span> <span class="s1">&#39;equid&#39;</span><span class="p">]</span>
+<span class="n">dom</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;domesticated_animal&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="c1">#split domesticated into large and small - sheep, goat, lamb, ~sheep would be small domesticated animals</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;wild_animal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bear&#39;</span><span class="p">,</span> <span class="s1">&#39;gazelle&#39;</span><span class="p">,</span> <span class="s1">&#39;mountain&#39;</span><span class="p">,</span> <span class="s1">&#39;lion&#39;</span><span class="p">]</span> <span class="c1"># account for &#39;mountain animal&#39; and plural</span>
+<span class="n">wild</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;wild_animal&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;dead_animal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;die&#39;</span><span class="p">]</span> <span class="c1"># find &#39;die&#39; before finding domesticated or wild</span>
+<span class="n">dead</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;dead_animal&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;leather_object&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;boots&#39;</span><span class="p">,</span> <span class="s1">&#39;sandals&#39;</span><span class="p">]</span>
+<span class="n">leath</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;leather_object&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;precious_object&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;copper&#39;</span><span class="p">,</span> <span class="s1">&#39;bronze&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;gold&#39;</span><span class="p">]</span>
+<span class="n">prec</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;precious_object&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="n">labels</span><span class="p">[</span><span class="s1">&#39;wool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wool&#39;</span><span class="p">,</span> <span class="s1">&#39;~wool&#39;</span><span class="p">,</span> <span class="s1">&#39;hair&#39;</span><span class="p">]</span>
+<span class="n">wool</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;wool&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="n">complete</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">lemma_list</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+  <span class="n">complete</span> <span class="o">=</span> <span class="n">complete</span> <span class="o">+</span> <span class="n">lemma_list</span>
+<span class="n">tot</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+<span class="c1"># labels[&#39;queens_archive&#39;] = []</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dom_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">dom</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+<span class="n">wild_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">wild</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+<span class="n">dead_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">dead</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+<span class="n">leath_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">leath</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+<span class="n">prec_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">prec</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+<span class="n">wool_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">words_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">wool</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)][</span><span class="s1">&#39;id_text&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each row of the <code class="docutils literal notranslate"><span class="pre">sparse</span></code> table below corresponds to one text, and the columns of the table correspond to the words that appear in the texts. Every cell contains the number of times a specific word appears in a certain text.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove lemmas that are a part of a seal as well as words that are being used to determine training classes</span>
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">))</span> <span class="o">|</span> <span class="n">words_df</span><span class="p">[</span><span class="s1">&#39;lemma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">tot</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">)</span>
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">words_df</span><span class="p">[</span><span class="nb">filter</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id_text&#39;</span><span class="p">,</span> <span class="s1">&#39;lemma&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">[</span><span class="s1">&#39;id_word&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s1">&#39;lemma&#39;</span><span class="p">)</span>
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">#cleaning</span>
+<span class="k">del</span> <span class="nb">filter</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">text_length</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>If a text contains a word that is one of the designated nouns in <code class="docutils literal notranslate"><span class="pre">labels</span></code>, it is added to the set to be used for our ML model. Texts that do not contain any of these words or that contain words corresponding to more than one archive are ignored.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">class_array</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">sparse</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+  <span class="n">cat</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">if</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">dom_tabs</span><span class="p">:</span>
+    <span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="s1">&#39;dom&#39;</span>
+  <span class="k">if</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">wild_tabs</span><span class="p">:</span>
+    <span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="s1">&#39;wild&#39;</span>
+  <span class="k">if</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">dead_tabs</span><span class="p">:</span>
+    <span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="s1">&#39;dead&#39;</span>
+  <span class="k">if</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">prec_tabs</span><span class="p">:</span>
+    <span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="s1">&#39;prec&#39;</span>
+  <span class="k">if</span> <span class="n">id_text</span> <span class="ow">in</span> <span class="n">wool_tabs</span><span class="p">:</span>
+    <span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="s1">&#39;wool&#39;</span>
+  <span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">class_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">class_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="n">class_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">class_array</span><span class="p">,</span> <span class="n">sparse</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next we remove the texts from <code class="docutils literal notranslate"><span class="pre">sparse</span></code> that we used in the previous cell.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">used_cols</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sparse</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\[.*&#39;</span> <span class="o">+</span> <span class="n">tot</span> <span class="o">+</span> <span class="s1">&#39;.*\]&#39;</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+    <span class="n">used_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+  <span class="c1">#elif re.match(&#39;.*PN$&#39;, col) is None:</span>
+  <span class="c1">#  used_cols.append(col)</span>
+
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">used_cols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now the <code class="docutils literal notranslate"><span class="pre">sparse</span></code> table will be updated to contain percentages of the frequency that a word appears in the text rather than the raw number of occurrences. This will allow us to better compare frequencies across texts of different lengths.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sparse</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;text_length&#39;</span><span class="p">:</span>
+    <span class="n">sparse</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">/</span><span class="n">text_length</span><span class="o">*</span><span class="mi">1000</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We must convert percentages from the previous cell into integers for the ML model to work properly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">this</span> <span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To form X, we reduce the <code class="docutils literal notranslate"><span class="pre">sparse</span></code> table to only contain texts that were designated for use above in <code class="docutils literal notranslate"><span class="pre">class_series</span></code>. Y consists of the names of the different archives.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">class_series</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">class_series</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our data is split into a training set and a test set. The ML model first uses the training set to learn how to predict the archives for the texts. Afterwards, the test set is used to verify how well our ML model works.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> 
+                                                    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+                 <span class="p">(</span><span class="s1">&#39;feature_reduction&#39;</span><span class="p">,</span> <span class="n">SelectPercentile</span><span class="p">(</span><span class="n">score_func</span> <span class="o">=</span> <span class="n">f_classif</span><span class="p">)),</span> 
+                 <span class="p">(</span><span class="s1">&#39;weighted_multi_nb&#39;</span><span class="p">,</span> <span class="n">MultinomialNB</span><span class="p">())</span>
+                 <span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;feature_reduction__percentile&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">10</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)],</span>
+    <span class="s1">&#39;weighted_multi_nb__alpha&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="n">i</span><span class="o">/</span><span class="mi">10</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+    <span class="p">},</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">best_params_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;feature_reduction__percentile&#39;: 70, &#39;weighted_multi_nb__alpha&#39;: 0.1}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our best score when run on the training set is about 93.6% accuracy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">best_score_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9359404096834265
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our best score when run on the test set is very similar to above at 93.2% accuracy, which is good because it suggests that our model isn’t overfitted to only work on the training set.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9321229050279329
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predicted</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sparse</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">predicted_df</span></code> table is the same as the <code class="docutils literal notranslate"><span class="pre">sparse</span></code> table from above, except that we have added an extra column at the end named <code class="docutils literal notranslate"><span class="pre">prediction</span></code>. <code class="docutils literal notranslate"><span class="pre">prediction</span></code> contains our ML model’s classification of which archive the text belongs to based on the frequency of the words that appear.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predicted_df</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">predicted_df</span><span class="p">[</span><span class="s1">&#39;prediction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predicted_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>lemma</th>
+      <th>$AN[NA]NA</th>
+      <th>$GIR[NA]NA</th>
+      <th>$HI[NA]NA</th>
+      <th>$KA[NA]NA</th>
+      <th>$KI[NA]NA</th>
+      <th>$LAM[NA]NA</th>
+      <th>$NI[NA]NA</th>
+      <th>$UD[NA]NA</th>
+      <th>$ŠA[NA]NA</th>
+      <th>$ŠID[NA]NA</th>
+      <th>1(aš)-a[]NU</th>
+      <th>1(aš)-kam[]NU</th>
+      <th>1(aš)-še₃[]NU</th>
+      <th>1(aš)[]NU</th>
+      <th>1(aš@c)[]NU</th>
+      <th>1(ban₂)-bi[]NU</th>
+      <th>1(ban₂)-ta[]NU</th>
+      <th>1(ban₂)-še₃[]NU</th>
+      <th>1(ban₂)[]NU</th>
+      <th>1(barig)-ta[]NU</th>
+      <th>1(barig)[]NU</th>
+      <th>1(burʾu)[]NU</th>
+      <th>1(bur₃)[]NU</th>
+      <th>1(diš)-a-kam[]NU</th>
+      <th>1(diš)-a-še₃[]NU</th>
+      <th>1(diš)-a[]NU</th>
+      <th>1(diš)-am₃[]NU</th>
+      <th>1(diš)-bi[]NU</th>
+      <th>1(diš)-kam-aš[]NU</th>
+      <th>1(diš)-kam-ma-aš[]NU</th>
+      <th>1(diš)-kam-ma[]NU</th>
+      <th>1(diš)-kam[]NU</th>
+      <th>1(diš)-ta[]NU</th>
+      <th>1(diš)-x[]NU</th>
+      <th>1(diš)-še₃[]NU</th>
+      <th>1(diš)[]NU</th>
+      <th>1(diš){ša}[]NU</th>
+      <th>1(diš@t)-kam-aš[]NU</th>
+      <th>1(diš@t)-kam-ma-aš[]NU</th>
+      <th>1(diš@t)-kam[]NU</th>
+      <th>...</th>
+      <th>šuʾi[barber]N</th>
+      <th>šuʾura[goose]N</th>
+      <th>ʾa₃-um[NA]NA</th>
+      <th>Ṣa.lim.tum[00]PN</th>
+      <th>Ṣe.AŠ₂.da.gan[00]PN</th>
+      <th>Ṣe.er.ṣe.ra.num₂[00]PN</th>
+      <th>Ṣe.la[00]PN</th>
+      <th>Ṣe.li.uš.da.gan[00]PN</th>
+      <th>Ṣe.lu.uš.da.gan.PA[00]PN</th>
+      <th>Ṣe.lu.uš[00]PN</th>
+      <th>Ṣe.lu.uš₂.da.gan[00]PN</th>
+      <th>Ṣe.ra.am[00]PN</th>
+      <th>Ṣe.ra[00]PN</th>
+      <th>Ṣeherkinum[0]PN</th>
+      <th>Ṣeṣe[0]PN</th>
+      <th>Ṣe₂.la.šu[00]PN</th>
+      <th>Ṣi.li.sud₃.da[00]PN</th>
+      <th>Ṣilala[0]PN</th>
+      <th>Ṣillašu[0]PN</th>
+      <th>ṢilliAdad[0]PN</th>
+      <th>ṢilliSud[0]PN</th>
+      <th>ṢilliŠulgi[0]PN</th>
+      <th>ṢillušDagan[0]PN</th>
+      <th>Ṣillušdagan[0]PN</th>
+      <th>ṢillušŠulgi[0]PN</th>
+      <th>Ṣillušṭab[0]PN</th>
+      <th>Ṣipram[0]PN</th>
+      <th>Ṣirula[0]PN</th>
+      <th>Ṣummidili[0]PN</th>
+      <th>ṣa-bi₂-im[NA]NA</th>
+      <th>ṣa-bu-um[NA]NA</th>
+      <th>ṣi-il-x-{d}iškur[NA]NA</th>
+      <th>ṣi-ip-ra-am[NA]NA</th>
+      <th>ṣi-ra-am[NA]NA</th>
+      <th>Ṭabaʾili[0]PN</th>
+      <th>Ṭabumšar[0]PN</th>
+      <th>Ṭabumšarri[0]PN</th>
+      <th>Ṭabši[0]SN</th>
+      <th>Ṭahili[0]PN</th>
+      <th>prediction</th>
+    </tr>
+    <tr>
+      <th>id_text</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>P100041</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dom</td>
+    </tr>
+    <tr>
+      <th>P100189</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>48</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dead</td>
+    </tr>
+    <tr>
+      <th>P100190</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>33</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>100</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dom</td>
+    </tr>
+    <tr>
+      <th>P100191</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>48</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dead</td>
+    </tr>
+    <tr>
+      <th>P100211</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>30</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>152</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dead</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>P519650</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dom</td>
+    </tr>
+    <tr>
+      <th>P519658</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>wild</td>
+    </tr>
+    <tr>
+      <th>P519792</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>155</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dom</td>
+    </tr>
+    <tr>
+      <th>P519957</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>71</td>
+      <td>0</td>
+      <td>71</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dom</td>
+    </tr>
+    <tr>
+      <th>P519959</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>dead</td>
+    </tr>
+  </tbody>
+</table>
+<p>15132 rows × 9174 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predicted_df</span><span class="o">.</span><span class="n">index</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;P100041&#39;, &#39;P100189&#39;, &#39;P100190&#39;, &#39;P100191&#39;, &#39;P100211&#39;, &#39;P100214&#39;,
+       &#39;P100215&#39;, &#39;P100217&#39;, &#39;P100218&#39;, &#39;P100219&#39;,
+       ...
+       &#39;P519534&#39;, &#39;P519613&#39;, &#39;P519623&#39;, &#39;P519624&#39;, &#39;P519647&#39;, &#39;P519650&#39;,
+       &#39;P519658&#39;, &#39;P519792&#39;, &#39;P519957&#39;, &#39;P519959&#39;],
+      dtype=&#39;object&#39;, name=&#39;id_text&#39;, length=15132)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="testing-the-model-on-hand-classified-data">
+<h3>5.4 Testing the Model on Hand-Classified Data<a class="headerlink" href="#testing-the-model-on-hand-classified-data" title="Permalink to this headline">¶</a></h3>
+<p>Here we first use our same ML model from before on Niek’s hand-classified texts from the wool archive. Testing our ML model on these tablets gives us 82.5% accuracy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wool_hand_tabs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;drive/MyDrive/SumerianNetworks/JupyterBook/Outputs/wool_pid.txt&#39;</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hand_wool_frame</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">wool_hand_tabs</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">class_series</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+
+<span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span> <span class="o">=</span> <span class="n">hand_wool_frame</span><span class="p">,</span> 
+        <span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">hand_wool_frame</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> 
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wool&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">hand_wool_frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8253968253968254
+</pre></div>
+</div>
+</div>
+</div>
+<p>Testing our ML model on 100 random hand-classified tablets selected from among all the texts gives us 87.2% accuracy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">niek_100_random_tabs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="s1">&#39;/content/drive/MyDrive/niek_cats&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">niek_100_random_tabs</span> <span class="o">=</span> <span class="n">niek_100_random_tabs</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;pnum&#39;</span><span class="p">)[</span><span class="s1">&#39;category_text&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_frame</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">niek_100_random_tabs</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
+<span class="n">random_frame</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">niek_100_random_tabs</span><span class="p">[</span><span class="n">random_frame</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">random_frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="s1">&#39;result&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span> <span class="o">=</span> <span class="n">random_frame</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.872093023255814
+</pre></div>
+</div>
+</div>
+</div>
+<p>A large majority of the tablets are part of the domestic archive and have been classified as such.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_frame</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">array</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;PandasArray&gt;
+[&#39;dead&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;, &#39;dead&#39;,
+  &#39;dom&#39;, &#39;dead&#39;, &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;, &#39;wild&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,
+ &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;wild&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;dead&#39;, &#39;wild&#39;,  &#39;dom&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;, &#39;wild&#39;,  &#39;dom&#39;, &#39;dead&#39;,  &#39;dom&#39;, &#39;dead&#39;, &#39;dead&#39;,
+  &#39;dom&#39;, &#39;dead&#39;, &#39;dead&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,
+  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;,  &#39;dom&#39;]
+Length: 86, dtype: object
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">random_frame</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="s1">&#39;result&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;dead&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dead&#39;, &#39;dead&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;wild&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;dead&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;wild&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;wild&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;dead&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;,
+       &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;, &#39;dom&#39;], dtype=&#39;&lt;U4&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="frequency-graphs">
+<h3>5.2 Frequency Graphs<a class="headerlink" href="#frequency-graphs" title="Permalink to this headline">¶</a></h3>
+<p>When run on all of the tablets, our ML model classifies a large portion of the texts into the domestic archive, since that is the most common one.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Archive Class&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Frequencies of Predicted Archive Classes in All Tablets&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">predicted_df</span><span class="p">[</span><span class="s1">&#39;prediction&#39;</span><span class="p">]))</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="n">predicted_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">predicted_df</span><span class="p">[</span><span class="s1">&#39;prediction&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">counts</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/PartIV-ArchiveClassification_140_0.png" src="_images/PartIV-ArchiveClassification_140_0.png" />
+</div>
+</div>
+<p>The below chart displays the actual frequencies of the different archives in the test set. As mentioned previously, it is visually obvious that there are many texts in the domestic archive, with comparatively very few texts in all of the other archives.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Archive Class&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Frequencies of Test Archive Classes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">test_counts</span> <span class="o">=</span> <span class="p">[(</span><span class="n">class_series</span><span class="p">[</span><span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">])[</span><span class="n">class_series</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_counts</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/PartIV-ArchiveClassification_142_0.png" src="_images/PartIV-ArchiveClassification_142_0.png" />
+</div>
+</div>
+<p>Below is a chart of the predicted frequency of the different archives by our ML model in the test set. Our predicted frequency looks very similar to the actual frequency above, which is good.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Archive Class&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Frequencies of Predicted Test Archive Classes&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">test_pred_counts</span> <span class="o">=</span> <span class="p">[</span><span class="n">predicted_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">predicted_df</span><span class="p">[</span><span class="s1">&#39;prediction&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_pred_counts</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/PartIV-ArchiveClassification_144_0.png" src="_images/PartIV-ArchiveClassification_144_0.png" />
+</div>
+</div>
+<p>Unfortunately, since our texts skew so heavily towards being part of the domestic archive, most of the other archives end up being overpredicted (i.e. our model says a text is part of that archive when it is actually not). Below we can see that the domestic archive is the only archive whose texts are not overpredicted.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Archive Class&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Rate&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Rate of Overprediction by Archive&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_pred_counts</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_counts</span><span class="p">)</span><span class="o">*</span><span class="nb">sum</span><span class="p">(</span><span class="n">test_counts</span><span class="p">)</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">test_pred_counts</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">rate</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/PartIV-ArchiveClassification_146_0.png" src="_images/PartIV-ArchiveClassification_146_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="accuracy-by-archive">
+<h3>5.3 Accuracy By Archive<a class="headerlink" href="#accuracy-by-archive" title="Permalink to this headline">¶</a></h3>
+<p>The accuracies for the dead and wild archives are relatively low. This is likely because those texts are being misclassified into the domestic archive, our largest archive, since all three of these archives deal with animals. The wool and precious archives have decent accuracies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;dead&#39;</span><span class="p">],</span> <span class="n">y_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;dead&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.734375
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;dom&#39;</span><span class="p">],</span> <span class="n">y_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;dom&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9449010654490106
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;wild&#39;</span><span class="p">],</span> <span class="n">y_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;wild&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7410071942446043
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;wool&#39;</span><span class="p">],</span> <span class="n">y_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;wool&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.8333333333333334
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;prec&#39;</span><span class="p">],</span> <span class="n">y_test</span><span class="p">[</span><span class="n">class_series</span> <span class="o">==</span> <span class="s1">&#39;prec&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9264705882352942
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can also look at the confusion matrix. A confusion matrix is used to evaluate the accuracy of a classification. The rows denote the actual archive, while the columns denote the predicted archive.</p>
+<p>Looking at the first column:</p>
+<ul class="simple">
+<li><p>73.44% of the dead archive texts are predicted correctly</p></li>
+<li><p>1.31% of the domestic archive texts are predicted to be part of the dead archive</p></li>
+<li><p>1.47% of the wild archive texts are predicted to be part of the dead archive</p></li>
+<li><p>1.43% of the wool archive texts are predicted to be part of the dead archive</p></li>
+<li><p>none of the precious archive texts are predicted to be part of the dead archive</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
+<span class="n">archive_confusion</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;true&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">archive_confusion</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.734375  , 0.171875  , 0.015625  , 0.0625    , 0.015625  ],
+       [0.0130898 , 0.94490107, 0.00487062, 0.03531202, 0.00182648],
+       [0.01470588, 0.05882353, 0.92647059, 0.        , 0.        ],
+       [0.01438849, 0.21582734, 0.02158273, 0.74100719, 0.00719424],
+       [0.        , 0.08333333, 0.08333333, 0.        , 0.83333333]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is the same confusion matrix converted into real numbers of texts. Since the number of domestic archive texts is so high, even a small bit of misclassification of the domestic archive texts can overwhelm the other archives.</p>
+<p>For example, even though only 1.3% of the domestic archive texts are predicted to be part of the dead archive, that corresponds to 43 texts, while the 73% of the dead archive texts that were predicted correctly correspond to just 47 texts. As a result, about half of the texts that were predicted to be part of the dead archive are incorrectly classified.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[  47,   11,    1,    4,    1],
+       [  43, 3104,   16,  116,    6],
+       [   1,    4,   63,    0,    0],
+       [   2,   30,    3,  103,    1],
+       [   0,    2,    2,    0,   20]])
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="section" id="save-results-in-csv-file-pickle">
-<h2>5 Save Results in CSV file &amp; Pickle<a class="headerlink" href="#save-results-in-csv-file-pickle" title="Permalink to this headline">¶</a></h2>
+<h2>6 Save Results in CSV file &amp; Pickle<a class="headerlink" href="#save-results-in-csv-file-pickle" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
